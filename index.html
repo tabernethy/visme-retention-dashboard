@@ -7,80 +7,98 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
 <style>
   :root {
-    --bg: #0f1117; --surface: #1a1d27; --surface2: #22263a;
-    --border: #2e3250; --text: #e8eaf0; --muted: #8b90a7;
-    --blue: #4f8ef7; --green: #34d399; --red: #f87171;
-    --yellow: #fbbf24; --purple: #a78bfa; --orange: #fb923c;
-    --teal: #22d3ee;
+    --bg:#f4f6fb; --surface:#ffffff; --surface2:#f0f2f8; --border:#e0e4ef;
+    --text:#1a1e2e; --muted:#6b7280;
+    --blue:#2563eb; --blue-lt:#eff6ff;
+    --green:#059669; --green-lt:#ecfdf5;
+    --red:#dc2626; --red-lt:#fef2f2;
+    --yellow:#d97706; --yellow-lt:#fffbeb;
+    --purple:#7c3aed; --teal:#0891b2; --muted-line:#94a3b8;
   }
-  * { box-sizing: border-box; margin: 0; padding: 0; }
-  body { background: var(--bg); color: var(--text); font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; font-size: 14px; }
-  
-  header { background: var(--surface); border-bottom: 1px solid var(--border); padding: 16px 28px; display: flex; align-items: center; gap: 16px; }
-  header h1 { font-size: 18px; font-weight: 600; color: var(--text); }
-  header .badge { background: var(--blue); color: #fff; padding: 3px 10px; border-radius: 12px; font-size: 11px; font-weight: 600; }
-  .toggle-row { display: flex; gap: 8px; margin-left: auto; }
-  .toggle-btn { background: var(--surface2); border: 1px solid var(--border); color: var(--muted); padding: 6px 16px; border-radius: 6px; cursor: pointer; font-size: 12px; font-weight: 500; transition: all .15s; }
-  .toggle-btn.active { background: var(--blue); border-color: var(--blue); color: #fff; }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;font-size:14px}
 
-  .tabs { display: flex; gap: 0; border-bottom: 1px solid var(--border); background: var(--surface); padding: 0 28px; overflow-x: auto; }
-  .tab { padding: 12px 20px; cursor: pointer; font-size: 13px; font-weight: 500; color: var(--muted); border-bottom: 2px solid transparent; white-space: nowrap; transition: all .15s; }
-  .tab.active { color: var(--blue); border-bottom-color: var(--blue); }
-  .tab:hover:not(.active) { color: var(--text); }
+  header{background:var(--surface);border-bottom:1px solid var(--border);padding:14px 28px;display:flex;align-items:center;gap:14px;box-shadow:0 1px 3px rgba(0,0,0,.06)}
+  header h1{font-size:17px;font-weight:700}
+  .badge{background:var(--blue);color:#fff;padding:3px 10px;border-radius:12px;font-size:11px;font-weight:600}
+  .toggle-row{display:flex;gap:4px;margin-left:auto;background:var(--surface2);border-radius:8px;padding:3px;border:1px solid var(--border)}
+  .toggle-btn{background:transparent;border:none;color:var(--muted);padding:5px 16px;border-radius:6px;cursor:pointer;font-size:12px;font-weight:500;transition:all .15s}
+  .toggle-btn.active{background:var(--surface);color:var(--blue);box-shadow:0 1px 3px rgba(0,0,0,.1);font-weight:600}
 
-  .content { padding: 24px 28px; }
-  .tab-pane { display: none; }
-  .tab-pane.active { display: block; }
+  .tabs{display:flex;border-bottom:1px solid var(--border);background:var(--surface);padding:0 28px;overflow-x:auto}
+  .tab{padding:12px 18px;cursor:pointer;font-size:13px;font-weight:500;color:var(--muted);border-bottom:2px solid transparent;white-space:nowrap;transition:all .15s}
+  .tab.active{color:var(--blue);border-bottom-color:var(--blue);font-weight:600}
+  .tab:hover:not(.active){color:var(--text)}
 
-  .kpi-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 14px; margin-bottom: 24px; }
-  .kpi { background: var(--surface); border: 1px solid var(--border); border-radius: 10px; padding: 16px 18px; }
-  .kpi-label { font-size: 11px; font-weight: 500; color: var(--muted); text-transform: uppercase; letter-spacing: .05em; margin-bottom: 6px; }
-  .kpi-value { font-size: 24px; font-weight: 700; color: var(--text); }
-  .kpi-sub { font-size: 11px; color: var(--muted); margin-top: 4px; }
+  .content{padding:22px 28px}
+  .tab-pane{display:none}
+  .tab-pane.active{display:block}
 
-  .chart-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 20px; }
-  .chart-grid.full { grid-template-columns: 1fr; }
-  .chart-grid.thirds { grid-template-columns: 1fr 1fr 1fr; }
-  .chart-card { background: var(--surface); border: 1px solid var(--border); border-radius: 10px; padding: 18px; }
-  .chart-card h3 { font-size: 13px; font-weight: 600; color: var(--muted); margin-bottom: 14px; text-transform: uppercase; letter-spacing: .04em; }
-  .chart-wrap { position: relative; height: 240px; }
-  .chart-wrap.tall { height: 300px; }
-  .chart-wrap.short { height: 180px; }
+  .slicer-bar{display:flex;align-items:center;gap:6px;margin-bottom:18px}
+  .slicer-label{font-size:12px;font-weight:500;color:var(--muted);margin-right:4px}
+  .slicer-btn{background:var(--surface);border:1px solid var(--border);color:var(--muted);padding:5px 14px;border-radius:6px;cursor:pointer;font-size:12px;font-weight:500;transition:all .15s}
+  .slicer-btn.active{background:var(--blue);border-color:var(--blue);color:#fff;font-weight:600}
+  .slicer-btn:hover:not(.active){border-color:var(--blue);color:var(--blue)}
 
-  .table-card { background: var(--surface); border: 1px solid var(--border); border-radius: 10px; overflow: hidden; margin-top: 16px; }
-  .table-card h3 { font-size: 13px; font-weight: 600; color: var(--muted); padding: 14px 16px; border-bottom: 1px solid var(--border); text-transform: uppercase; letter-spacing: .04em; }
-  .table-controls { padding: 10px 16px; border-bottom: 1px solid var(--border); display: flex; gap: 10px; flex-wrap: wrap; }
-  .filter-select { background: var(--surface2); border: 1px solid var(--border); color: var(--text); padding: 5px 10px; border-radius: 6px; font-size: 12px; }
-  table { width: 100%; border-collapse: collapse; font-size: 12px; }
-  th { background: var(--surface2); color: var(--muted); font-weight: 600; padding: 10px 12px; text-align: left; font-size: 11px; text-transform: uppercase; letter-spacing: .04em; position: sticky; top: 0; }
-  td { padding: 9px 12px; border-bottom: 1px solid var(--border); color: var(--text); }
-  tr:last-child td { border-bottom: none; }
-  tr:hover td { background: var(--surface2); }
-  .scrollable { max-height: 380px; overflow-y: auto; }
+  .kpi-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:12px;margin-bottom:20px}
+  .kpi{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:16px 18px;box-shadow:0 1px 3px rgba(0,0,0,.04)}
+  .kpi-label{font-size:11px;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:.05em;margin-bottom:6px}
+  .kpi-value{font-size:24px;font-weight:700;color:var(--text)}
+  .kpi-sub{font-size:11px;color:var(--muted);margin-top:4px}
 
-  .pill { display: inline-block; padding: 2px 8px; border-radius: 10px; font-size: 11px; font-weight: 600; }
-  .pill-new { background: rgba(52,211,153,.15); color: var(--green); }
-  .pill-churn { background: rgba(248,113,113,.15); color: var(--red); }
-  .pill-upsell { background: rgba(79,142,247,.15); color: var(--blue); }
-  .pill-downsell { background: rgba(251,191,36,.15); color: var(--yellow); }
+  .chart-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:16px}
+  .chart-grid.full{grid-template-columns:1fr}
+  .chart-card{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:18px 20px;box-shadow:0 1px 3px rgba(0,0,0,.04)}
+  .chart-card h3{font-size:12px;font-weight:600;color:var(--muted);margin-bottom:14px;text-transform:uppercase;letter-spacing:.05em}
+  .chart-wrap{position:relative;height:240px}
+  .chart-wrap.tall{height:300px}
 
-  .delta-pos { color: var(--green); }
-  .delta-neg { color: var(--red); }
-  .delta-neu { color: var(--muted); }
+  /* Movements */
+  .month-slicer{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:18px;align-items:center}
+  .month-pill{background:var(--surface);border:1px solid var(--border);color:var(--muted);padding:5px 14px;border-radius:20px;cursor:pointer;font-size:12px;font-weight:500;transition:all .15s}
+  .month-pill.active{background:var(--blue);border-color:var(--blue);color:#fff;font-weight:600}
+  .month-pill:hover:not(.active){border-color:var(--blue);color:var(--blue)}
 
-  .vs-budget-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 20px; }
-  .budget-stat { background: var(--surface2); border-radius: 8px; padding: 12px 14px; }
-  .budget-stat-label { font-size: 11px; color: var(--muted); margin-bottom: 4px; }
-  .budget-stat-val { font-size: 16px; font-weight: 700; }
-  .vs-budget-kpis { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; margin-bottom: 20px; }
-  .behind { color: var(--red); }
-  .ahead { color: var(--green); }
-  .neutral { color: var(--muted); }
+  .move-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+  .move-section{background:var(--surface);border:1px solid var(--border);border-radius:10px;overflow:hidden;box-shadow:0 1px 3px rgba(0,0,0,.04)}
+  .move-header{display:flex;align-items:center;gap:8px;padding:12px 16px;border-bottom:1px solid var(--border)}
+  .move-header-title{font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:.05em}
+  .move-header-count{font-size:11px;font-weight:600;padding:2px 8px;border-radius:10px}
+  .move-header-arr{font-size:13px;font-weight:700;margin-left:auto}
 
-  @media (max-width: 768px) {
-    .chart-grid, .chart-grid.thirds { grid-template-columns: 1fr; }
-    .vs-budget-kpis { grid-template-columns: 1fr 1fr; }
-    .content { padding: 16px; }
+  .move-new .move-header{background:var(--green-lt)}
+  .move-new .move-header-title{color:var(--green)}
+  .move-new .move-header-count{background:rgba(5,150,105,.12);color:var(--green)}
+  .move-new .move-header-arr{color:var(--green)}
+  .move-churn .move-header{background:var(--red-lt)}
+  .move-churn .move-header-title{color:var(--red)}
+  .move-churn .move-header-count{background:rgba(220,38,38,.12);color:var(--red)}
+  .move-churn .move-header-arr{color:var(--red)}
+  .move-upsell .move-header{background:var(--blue-lt)}
+  .move-upsell .move-header-title{color:var(--blue)}
+  .move-upsell .move-header-count{background:rgba(37,99,235,.12);color:var(--blue)}
+  .move-upsell .move-header-arr{color:var(--blue)}
+  .move-downsell .move-header{background:var(--yellow-lt)}
+  .move-downsell .move-header-title{color:var(--yellow)}
+  .move-downsell .move-header-count{background:rgba(217,119,6,.12);color:var(--yellow)}
+  .move-downsell .move-header-arr{color:var(--yellow)}
+
+  .move-table{width:100%;border-collapse:collapse;font-size:12px}
+  .move-table th{background:var(--surface2);color:var(--muted);font-weight:600;padding:8px 12px;text-align:left;font-size:11px;border-bottom:1px solid var(--border)}
+  .move-table td{padding:8px 12px;border-bottom:1px solid var(--border);color:var(--text)}
+  .move-table tr:last-child td{border-bottom:none}
+  .move-table tr:hover td{background:var(--surface2)}
+  .move-table-wrap{max-height:260px;overflow-y:auto}
+  .empty-state{padding:24px;text-align:center;color:var(--muted);font-size:12px}
+
+  .vs-budget-kpis{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:20px}
+  .behind{color:var(--red)!important}
+  .ahead{color:var(--green)!important}
+  .neutral{color:var(--muted)!important}
+
+  @media(max-width:900px){
+    .chart-grid,.move-grid,.vs-budget-kpis{grid-template-columns:1fr}
+    .content{padding:14px 16px}
   }
 </style>
 </head>
@@ -88,7 +106,7 @@
 
 <header>
   <h1>Visme Enterprise Retention</h1>
-  <span class="badge" id="latest-badge">Mar 2026</span>
+  <span class="badge">Mar 2026</span>
   <div class="toggle-row">
     <button class="toggle-btn active" onclick="setLevel('customer')">Customer</button>
     <button class="toggle-btn" onclick="setLevel('parent')">Parent</button>
@@ -96,7 +114,7 @@
 </header>
 
 <div class="tabs">
-  <div class="tab active" onclick="showTab('overview')">Overview</div>
+  <div class="tab active"   onclick="showTab('overview')">Overview</div>
   <div class="tab" onclick="showTab('ltm')">LTM Cohort</div>
   <div class="tab" onclick="showTab('waterfall')">MoM Waterfall</div>
   <div class="tab" onclick="showTab('movements')">Customer Movements</div>
@@ -105,426 +123,407 @@
 
 <div class="content">
 
-<!-- OVERVIEW TAB -->
 <div class="tab-pane active" id="tab-overview">
+  <div class="slicer-bar">
+    <span class="slicer-label">Time range:</span>
+    <button class="slicer-btn" onclick="setSlicer('overview',3,this)">3M</button>
+    <button class="slicer-btn" onclick="setSlicer('overview',6,this)">6M</button>
+    <button class="slicer-btn" onclick="setSlicer('overview',12,this)">12M</button>
+    <button class="slicer-btn" onclick="setSlicer('overview',18,this)">18M</button>
+    <button class="slicer-btn active" onclick="setSlicer('overview',24,this)">24M</button>
+  </div>
   <div class="kpi-grid" id="kpi-row"></div>
   <div class="chart-grid">
-    <div class="chart-card">
-      <h3>ARR Over Time</h3>
-      <div class="chart-wrap tall"><canvas id="chart-arr-time"></canvas></div>
-    </div>
-    <div class="chart-card">
-      <h3>LTM NRR & GRR</h3>
-      <div class="chart-wrap tall"><canvas id="chart-nrr-time"></canvas></div>
-    </div>
+    <div class="chart-card"><h3>ARR Over Time</h3><div class="chart-wrap tall"><canvas id="chart-arr-time"></canvas></div></div>
+    <div class="chart-card"><h3>Avg ARR per Active Customer</h3><div class="chart-wrap tall"><canvas id="chart-arr-per-logo"></canvas></div></div>
   </div>
   <div class="chart-grid">
-    <div class="chart-card">
-      <h3>LTM Logo Retention</h3>
-      <div class="chart-wrap"><canvas id="chart-logo-time"></canvas></div>
-    </div>
-    <div class="chart-card">
-      <h3>ARR per Active Logo</h3>
-      <div class="chart-wrap"><canvas id="chart-arr-per-logo"></canvas></div>
-    </div>
+    <div class="chart-card"><h3>LTM NRR &amp; GRR</h3><div class="chart-wrap"><canvas id="chart-nrr-time"></canvas></div></div>
+    <div class="chart-card"><h3>LTM Logo Retention</h3><div class="chart-wrap"><canvas id="chart-logo-time"></canvas></div></div>
   </div>
 </div>
 
-<!-- LTM COHORT TAB -->
 <div class="tab-pane" id="tab-ltm">
+  <div class="slicer-bar">
+    <span class="slicer-label">Time range:</span>
+    <button class="slicer-btn" onclick="setSlicer('ltm',3,this)">3M</button>
+    <button class="slicer-btn" onclick="setSlicer('ltm',6,this)">6M</button>
+    <button class="slicer-btn" onclick="setSlicer('ltm',12,this)">12M</button>
+    <button class="slicer-btn" onclick="setSlicer('ltm',18,this)">18M</button>
+    <button class="slicer-btn active" onclick="setSlicer('ltm',24,this)">24M</button>
+  </div>
   <div class="kpi-grid" id="ltm-kpi-row"></div>
   <div class="chart-grid full">
-    <div class="chart-card">
-      <h3>LTM NRR, GRR & Logo Retention</h3>
-      <div class="chart-wrap tall"><canvas id="chart-ltm-full"></canvas></div>
-    </div>
+    <div class="chart-card"><h3>LTM NRR, GRR &amp; Logo Retention</h3><div class="chart-wrap tall"><canvas id="chart-ltm-full"></canvas></div></div>
   </div>
   <div class="chart-grid">
-    <div class="chart-card">
-      <h3>Cohort ARR — Prior vs Current</h3>
-      <div class="chart-wrap"><canvas id="chart-cohort-arr"></canvas></div>
-    </div>
-    <div class="chart-card">
-      <h3>Cohort Logo Count — Prior vs Retained</h3>
-      <div class="chart-wrap"><canvas id="chart-cohort-logos"></canvas></div>
-    </div>
+    <div class="chart-card"><h3>Cohort ARR — Prior vs. Current</h3><div class="chart-wrap"><canvas id="chart-cohort-arr"></canvas></div></div>
+    <div class="chart-card"><h3>Cohort Logos — Prior vs. Retained</h3><div class="chart-wrap"><canvas id="chart-cohort-logos"></canvas></div></div>
   </div>
 </div>
 
-<!-- WATERFALL TAB -->
 <div class="tab-pane" id="tab-waterfall">
+  <div class="slicer-bar">
+    <span class="slicer-label">Time range:</span>
+    <button class="slicer-btn" onclick="setSlicer('waterfall',3,this)">3M</button>
+    <button class="slicer-btn" onclick="setSlicer('waterfall',6,this)">6M</button>
+    <button class="slicer-btn" onclick="setSlicer('waterfall',12,this)">12M</button>
+    <button class="slicer-btn" onclick="setSlicer('waterfall',18,this)">18M</button>
+    <button class="slicer-btn active" onclick="setSlicer('waterfall',24,this)">24M</button>
+  </div>
   <div class="chart-grid full">
-    <div class="chart-card">
-      <h3>MoM ARR Movements (Last 24 Months)</h3>
-      <div class="chart-wrap tall"><canvas id="chart-waterfall"></canvas></div>
-    </div>
+    <div class="chart-card"><h3>MoM ARR Movements</h3><div class="chart-wrap tall"><canvas id="chart-waterfall"></canvas></div></div>
   </div>
   <div class="chart-grid">
-    <div class="chart-card">
-      <h3>New ARR by Month</h3>
-      <div class="chart-wrap"><canvas id="chart-new"></canvas></div>
-    </div>
-    <div class="chart-card">
-      <h3>Churn ARR by Month</h3>
-      <div class="chart-wrap"><canvas id="chart-churn"></canvas></div>
-    </div>
+    <div class="chart-card"><h3>New ARR</h3><div class="chart-wrap"><canvas id="chart-new"></canvas></div></div>
+    <div class="chart-card"><h3>Churn ARR</h3><div class="chart-wrap"><canvas id="chart-churn"></canvas></div></div>
   </div>
   <div class="chart-grid">
-    <div class="chart-card">
-      <h3>Net Expansion (Upsell − Downsell)</h3>
-      <div class="chart-wrap"><canvas id="chart-expansion"></canvas></div>
-    </div>
-    <div class="chart-card">
-      <h3>ARR Trend</h3>
-      <div class="chart-wrap"><canvas id="chart-arr-trend"></canvas></div>
-    </div>
+    <div class="chart-card"><h3>Net Expansion (Upsell − Downsell)</h3><div class="chart-wrap"><canvas id="chart-expansion"></canvas></div></div>
+    <div class="chart-card"><h3>ARR Trend</h3><div class="chart-wrap"><canvas id="chart-arr-trend"></canvas></div></div>
   </div>
 </div>
 
-<!-- MOVEMENTS TAB -->
 <div class="tab-pane" id="tab-movements">
-  <div class="table-card">
-    <h3>Customer Movement Detail — Last 12 Months</h3>
-    <div class="table-controls">
-      <select class="filter-select" id="move-month" onchange="filterMovements()">
-        <option value="">All Months</option>
-      </select>
-      <select class="filter-select" id="move-type" onchange="filterMovements()">
-        <option value="">All Types</option>
-        <option value="New">New</option>
-        <option value="Churn">Churn</option>
-        <option value="Upsell">Upsell</option>
-        <option value="Downsell">Downsell</option>
-      </select>
+  <div class="month-slicer" id="month-slicer"></div>
+  <div class="move-grid">
+    <div class="move-section move-new">
+      <div class="move-header">
+        <span class="move-header-title">New</span>
+        <span class="move-header-count" id="new-count">0</span>
+        <span class="move-header-arr" id="new-arr">$0</span>
+      </div>
+      <div class="move-table-wrap">
+        <table class="move-table"><thead><tr><th>Company</th><th>ARR</th></tr></thead>
+        <tbody id="new-body"></tbody></table>
+      </div>
     </div>
-    <div class="scrollable">
-      <table>
-        <thead><tr><th>Month</th><th>Company</th><th>Parent</th><th>Type</th><th>Prior ARR</th><th>Current ARR</th><th>Delta</th></tr></thead>
-        <tbody id="move-table-body"></tbody>
-      </table>
+    <div class="move-section move-churn">
+      <div class="move-header">
+        <span class="move-header-title">Churn</span>
+        <span class="move-header-count" id="churn-count">0</span>
+        <span class="move-header-arr" id="churn-arr">$0</span>
+      </div>
+      <div class="move-table-wrap">
+        <table class="move-table"><thead><tr><th>Company</th><th>Lost ARR</th></tr></thead>
+        <tbody id="churn-body"></tbody></table>
+      </div>
+    </div>
+    <div class="move-section move-upsell">
+      <div class="move-header">
+        <span class="move-header-title">Upsell</span>
+        <span class="move-header-count" id="upsell-count">0</span>
+        <span class="move-header-arr" id="upsell-arr">$0</span>
+      </div>
+      <div class="move-table-wrap">
+        <table class="move-table"><thead><tr><th>Company</th><th>Prior</th><th>New</th><th>+Δ ARR</th></tr></thead>
+        <tbody id="upsell-body"></tbody></table>
+      </div>
+    </div>
+    <div class="move-section move-downsell">
+      <div class="move-header">
+        <span class="move-header-title">Downsell</span>
+        <span class="move-header-count" id="downsell-count">0</span>
+        <span class="move-header-arr" id="downsell-arr">$0</span>
+      </div>
+      <div class="move-table-wrap">
+        <table class="move-table"><thead><tr><th>Company</th><th>Prior</th><th>New</th><th>−Δ ARR</th></tr></thead>
+        <tbody id="downsell-body"></tbody></table>
+      </div>
     </div>
   </div>
 </div>
 
-<!-- VS BUDGET TAB -->
 <div class="tab-pane" id="tab-budget">
   <div class="vs-budget-kpis" id="budget-kpi-row"></div>
   <div class="chart-grid full">
-    <div class="chart-card">
-      <h3>Total ARR — Actual vs. Budget</h3>
-      <div class="chart-wrap tall"><canvas id="chart-budget-arr"></canvas></div>
-    </div>
+    <div class="chart-card"><h3>Total ARR — Actual vs. Budget</h3><div class="chart-wrap tall"><canvas id="chart-budget-arr"></canvas></div></div>
   </div>
   <div class="chart-grid">
-    <div class="chart-card">
-      <h3>Churn ARR — Actual vs. Budget</h3>
-      <div class="chart-wrap"><canvas id="chart-budget-churn"></canvas></div>
-    </div>
-    <div class="chart-card">
-      <h3>New ARR — Actual vs. Budget</h3>
-      <div class="chart-wrap"><canvas id="chart-budget-new"></canvas></div>
-    </div>
+    <div class="chart-card"><h3>Churn ARR — Actual vs. Budget</h3><div class="chart-wrap"><canvas id="chart-budget-churn"></canvas></div></div>
+    <div class="chart-card"><h3>New ARR — Actual vs. Budget</h3><div class="chart-wrap"><canvas id="chart-budget-new"></canvas></div></div>
   </div>
 </div>
 
-</div><!-- /content -->
+</div>
 
 <script>
 const DATA = {"generated":"2026-03-30","latest_month":"2026-03","summary":{"customer":{"eop_arr":1230264.36,"active_logos":164,"arr_per_logo":7501.61,"ltm_nrr":0.77,"ltm_grr":0.72,"ltm_logo_ret":0.75,"ltm_cohort":183,"ltm_retained":138},"parent":{"eop_arr":1230264.36,"active_logos":146,"arr_per_logo":8426.47,"ltm_nrr":0.78,"ltm_grr":0.72,"ltm_logo_ret":0.76,"ltm_cohort":166,"ltm_retained":126}},"waterfall":[{"month":"2020-01","arr":108284.28,"new":0.0,"churn":0.0,"upsell":0.0,"downsell":0.0},{"month":"2020-02","arr":100314.24,"new":468.0,"churn":-10830.0,"upsell":2991.96,"downsell":-600.0},{"month":"2020-03","arr":116643.24,"new":11181.0,"churn":-0.0,"upsell":5148.0,"downsell":-0.0},{"month":"2020-04","arr":119523.24,"new":600.0,"churn":-0.0,"upsell":3480.0,"downsell":-1200.0},{"month":"2020-05","arr":142737.24,"new":19368.0,"churn":-0.0,"upsell":5046.0,"downsell":-1200.0},{"month":"2020-06","arr":166965.24,"new":21168.0,"churn":-0.0,"upsell":3900.0,"downsell":-840.0},{"month":"2020-07","arr":202293.24,"new":7236.0,"churn":-0.0,"upsell":28092.0,"downsell":-0.0},{"month":"2020-08","arr":211938.24,"new":7911.0,"churn":-0.0,"upsell":1851.0,"downsell":-117.0},{"month":"2020-09","arr":203861.4,"new":6999.96,"churn":-21711.0,"upsell":6789.0,"downsell":-154.8},{"month":"2020-10","arr":274415.4,"new":66537.0,"churn":-0.0,"upsell":4137.0,"downsell":-120.0},{"month":"2020-11","arr":332347.44,"new":45408.0,"churn":-0.0,"upsell":12524.04,"downsell":-0.0},{"month":"2020-12","arr":365811.36,"new":24457.92,"churn":-600.0,"upsell":9921.0,"downsell":-315.0},{"month":"2021-01","arr":400149.36,"new":17583.0,"churn":-0.0,"upsell":16758.0,"downsell":-3.0},{"month":"2021-02","arr":350945.16,"new":7392.0,"churn":-47464.2,"upsell":13443.0,"downsell":-22575.0},{"month":"2021-03","arr":455538.72,"new":88469.16,"churn":-0.0,"upsell":21074.4,"downsell":-4950.0},{"month":"2021-04","arr":473536.32,"new":16872.0,"churn":-882.0,"upsell":2862.6,"downsell":-855.0},{"month":"2021-05","arr":533246.76,"new":42690.0,"churn":-0.0,"upsell":20332.44,"downsell":-3312.0},{"month":"2021-06","arr":555990.72,"new":28620.0,"churn":-3600.0,"upsell":4923.96,"downsell":-7200.0},{"month":"2021-07","arr":586214.76,"new":18105.96,"churn":-5850.0,"upsell":18568.08,"downsell":-600.0},{"month":"2021-08","arr":617979.72,"new":17886.0,"churn":-0.0,"upsell":15450.96,"downsell":-1572.0},{"month":"2021-09","arr":687193.56,"new":54435.6,"churn":-0.0,"upsell":17734.2,"downsell":-2955.96},{"month":"2021-10","arr":705568.44,"new":12675.96,"churn":-0.0,"upsell":7176.0,"downsell":-1477.08},{"month":"2021-11","arr":725800.44,"new":11043.96,"churn":-300.0,"upsell":12888.0,"downsell":-3399.96},{"month":"2021-12","arr":760104.84,"new":18828.0,"churn":-0.0,"upsell":17162.4,"downsell":-1686.0},{"month":"2022-01","arr":786936.84,"new":8304.0,"churn":-0.0,"upsell":18528.0,"downsell":-0.0},{"month":"2022-02","arr":789911.04,"new":35411.88,"churn":-39348.0,"upsell":8467.2,"downsell":-1556.88},{"month":"2022-03","arr":859226.16,"new":55605.0,"churn":-3192.0,"upsell":16902.12,"downsell":-0.0},{"month":"2022-04","arr":895500.24,"new":29379.84,"churn":-5304.0,"upsell":12609.24,"downsell":-411.0},{"month":"2022-05","arr":1017769.08,"new":30163.92,"churn":-3828.0,"upsell":96043.92,"downsell":-111.0},{"month":"2022-06","arr":1003593.24,"new":35747.88,"churn":-1044.0,"upsell":32711.28,"downsell":-81591.0},{"month":"2022-07","arr":1021054.08,"new":17764.92,"churn":-0.0,"upsell":14025.0,"downsell":-14329.08},{"month":"2022-08","arr":1048749.08,"new":41000.0,"churn":-21343.92,"upsell":10585.92,"downsell":-2547.0},{"month":"2022-09","arr":1085685.12,"new":31969.8,"churn":-16499.88,"upsell":22455.12,"downsell":-989.0},{"month":"2022-10","arr":1132956.96,"new":34657.92,"churn":-0.0,"upsell":14893.92,"downsell":-2280.0},{"month":"2022-11","arr":1140894.84,"new":31592.88,"churn":-35400.0,"upsell":11745.0,"downsell":-0.0},{"month":"2022-12","arr":1175011.44,"new":51900.0,"churn":-17418.0,"upsell":5358.6,"downsell":-5724.0},{"month":"2023-01","arr":1203821.76,"new":33499.92,"churn":-4960.92,"upsell":5250.0,"downsell":-4978.68},{"month":"2023-02","arr":1167355.68,"new":21048.0,"churn":-62194.92,"upsell":18040.8,"downsell":-13359.96},{"month":"2023-03","arr":1219569.24,"new":43038.96,"churn":-6000.0,"upsell":26028.12,"downsell":-10853.52},{"month":"2023-04","arr":1247270.16,"new":14749.92,"churn":-0.0,"upsell":17907.0,"downsell":-4956.0},{"month":"2023-05","arr":1314759.6,"new":53749.68,"churn":-6783.96,"upsell":30125.76,"downsell":-9602.04},{"month":"2023-06","arr":1344966.64,"new":0.0,"churn":-3267.0,"upsell":37331.56,"downsell":-3857.52},{"month":"2023-07","arr":1366820.32,"new":38984.76,"churn":-21750.0,"upsell":5955.48,"downsell":-1336.56},{"month":"2023-08","arr":1394545.24,"new":32644.8,"churn":-10500.0,"upsell":11337.12,"downsell":-5757.0},{"month":"2023-09","arr":1412036.56,"new":13797.0,"churn":-14700.0,"upsell":18742.32,"downsell":-348.0},{"month":"2023-10","arr":1433680.24,"new":14721.96,"churn":-6000.0,"upsell":13617.72,"downsell":-696.0},{"month":"2023-11","arr":1420455.24,"new":15000.0,"churn":-51891.96,"upsell":38710.92,"downsell":-15043.96},{"month":"2023-12","arr":1415118.4,"new":27999.88,"churn":-22999.92,"upsell":20227.44,"downsell":-30564.24},{"month":"2024-01","arr":1411967.68,"new":15823.92,"churn":-6936.0,"upsell":11993.88,"downsell":-24032.52},{"month":"2024-02","arr":1441071.96,"new":9000.0,"churn":-3480.0,"upsell":30272.28,"downsell":-6688.0},{"month":"2024-03","arr":1450283.88,"new":3480.0,"churn":-10650.0,"upsell":25439.88,"downsell":-9057.96},{"month":"2024-04","arr":1448752.92,"new":15624.0,"churn":-6000.0,"upsell":5034.0,"downsell":-16188.96},{"month":"2024-05","arr":1435790.4,"new":0.0,"churn":-0.0,"upsell":14289.96,"downsell":-27252.48},{"month":"2024-06","arr":1374376.44,"new":0.0,"churn":-55209.84,"upsell":6605.88,"downsell":-12810.0},{"month":"2024-07","arr":1359371.76,"new":18799.92,"churn":-6484.92,"upsell":10597.2,"downsell":-37916.88},{"month":"2024-08","arr":1365878.04,"new":21399.96,"churn":-4158.0,"upsell":10093.56,"downsell":-20829.24},{"month":"2024-09","arr":1385444.04,"new":7407.0,"churn":-6000.0,"upsell":22158.96,"downsell":-3999.96},{"month":"2024-10","arr":1426159.56,"new":6000.0,"churn":-14979.96,"upsell":65520.6,"downsell":-15825.12},{"month":"2024-11","arr":1404066.36,"new":0.0,"churn":-29400.0,"upsell":21238.92,"downsell":-13932.12},{"month":"2024-12","arr":1417466.04,"new":27000.0,"churn":-3741.96,"upsell":4857.0,"downsell":-14715.36},{"month":"2025-01","arr":1361692.68,"new":9000.0,"churn":-76379.88,"upsell":14099.04,"downsell":-2492.52},{"month":"2025-02","arr":1367884.56,"new":15749.88,"churn":-29391.0,"upsell":25702.92,"downsell":-5869.92},{"month":"2025-03","arr":1373336.4,"new":27046.92,"churn":-16422.0,"upsell":6651.0,"downsell":-11824.08},{"month":"2025-04","arr":1369168.2,"new":12054.96,"churn":-13872.0,"upsell":8374.8,"downsell":-10725.96},{"month":"2025-05","arr":1310189.36,"new":15114.0,"churn":-77399.64,"upsell":5253.24,"downsell":-1946.44},{"month":"2025-06","arr":1289104.52,"new":9000.0,"churn":-20176.92,"upsell":4338.0,"downsell":-14245.92},{"month":"2025-07","arr":1317950.0,"new":51649.8,"churn":-28970.04,"upsell":17865.72,"downsell":-11700.0},{"month":"2025-08","arr":1323754.65,"new":23999.88,"churn":-4848.0,"upsell":12405.0,"downsell":-25752.23},{"month":"2025-09","arr":1376406.48,"new":15199.92,"churn":-48035.88,"upsell":88120.23,"downsell":-2632.44},{"month":"2025-10","arr":1290326.64,"new":9000.0,"churn":-29289.0,"upsell":8882.64,"downsell":-74673.48},{"month":"2025-11","arr":1256966.52,"new":4999.92,"churn":-18750.0,"upsell":0.0,"downsell":-19610.04},{"month":"2025-12","arr":1250485.8,"new":12283.92,"churn":-25999.92,"upsell":24516.0,"downsell":-17280.72},{"month":"2026-01","arr":1222454.76,"new":12000.0,"churn":-40260.0,"upsell":2874.96,"downsell":-2646.0},{"month":"2026-02","arr":1223410.68,"new":0.0,"churn":-2376.0,"upsell":6822.96,"downsell":-3491.04},{"month":"2026-03","arr":1230264.36,"new":10860.0,"churn":-0.0,"upsell":3000.0,"downsell":-7006.32}],"ltm_customer":[{"month":"2021-01","nrr":1.64,"grr":0.98,"logo_ret":0.98,"cohort_size":48,"logos_retained":47,"arr_prior":108284.28,"arr_now":177074.28},{"month":"2021-02","nrr":1.38,"grr":0.97,"logo_ret":0.93,"cohort_size":46,"logos_retained":43,"arr_prior":100314.24,"arr_now":138023.28},{"month":"2021-03","nrr":1.62,"grr":0.97,"logo_ret":0.98,"cohort_size":50,"logos_retained":49,"arr_prior":116643.24,"arr_now":188425.68},{"month":"2021-04","nrr":1.59,"grr":0.96,"logo_ret":0.98,"cohort_size":51,"logos_retained":50,"arr_prior":119523.24,"arr_now":189710.28},{"month":"2021-05","nrr":1.52,"grr":0.97,"logo_ret":0.98,"cohort_size":55,"logos_retained":54,"arr_prior":142737.24,"arr_now":217466.28},{"month":"2021-06","nrr":1.41,"grr":0.93,"logo_ret":0.97,"cohort_size":58,"logos_retained":56,"arr_prior":166965.24,"arr_now":236198.28},{"month":"2021-07","nrr":1.23,"grr":0.91,"logo_ret":0.95,"cohort_size":62,"logos_retained":59,"arr_prior":202293.24,"arr_now":249114.36},{"month":"2021-08","nrr":1.28,"grr":0.96,"logo_ret":0.98,"cohort_size":66,"logos_retained":65,"arr_prior":211938.24,"arr_now":271111.32},{"month":"2021-09","nrr":1.28,"grr":0.96,"logo_ret":1.0,"cohort_size":64,"logos_retained":64,"arr_prior":203861.4,"arr_now":259924.32},{"month":"2021-10","nrr":1.13,"grr":0.89,"logo_ret":1.0,"cohort_size":68,"logos_retained":68,"arr_prior":274415.4,"arr_now":310790.28},{"month":"2021-11","nrr":1.22,"grr":0.89,"logo_ret":0.99,"cohort_size":77,"logos_retained":76,"arr_prior":332347.44,"arr_now":406832.64},{"month":"2021-12","nrr":1.19,"grr":0.9,"logo_ret":0.99,"cohort_size":82,"logos_retained":81,"arr_prior":365811.36,"arr_now":433592.64},{"month":"2022-01","nrr":1.18,"grr":0.91,"logo_ret":1.0,"cohort_size":87,"logos_retained":87,"arr_prior":400149.36,"arr_now":473430.84},{"month":"2022-02","nrr":1.15,"grr":0.92,"logo_ret":0.95,"cohort_size":81,"logos_retained":77,"arr_prior":350945.16,"arr_now":403195.56},{"month":"2022-03","nrr":1.21,"grr":0.96,"logo_ret":0.99,"cohort_size":97,"logos_retained":96,"arr_prior":455538.72,"arr_now":552003.48},{"month":"2022-04","nrr":1.22,"grr":0.96,"logo_ret":0.99,"cohort_size":99,"logos_retained":98,"arr_prior":473536.32,"arr_now":579500.16},{"month":"2022-05","nrr":1.18,"grr":0.96,"logo_ret":0.98,"cohort_size":102,"logos_retained":100,"arr_prior":533246.76,"arr_now":631568.04},{"month":"2022-06","nrr":1.23,"grr":0.98,"logo_ret":0.98,"cohort_size":109,"logos_retained":107,"arr_prior":555990.72,"arr_now":685851.24},{"month":"2022-07","nrr":1.19,"grr":0.96,"logo_ret":1.0,"cohort_size":113,"logos_retained":113,"arr_prior":586214.76,"arr_now":697514.4},{"month":"2022-08","nrr":1.13,"grr":0.93,"logo_ret":0.95,"cohort_size":117,"logos_retained":111,"arr_prior":617979.72,"arr_now":700247.4},{"month":"2022-09","nrr":1.1,"grr":0.91,"logo_ret":0.94,"cohort_size":121,"logos_retained":114,"arr_prior":687193.56,"arr_now":755393.28},{"month":"2022-10","nrr":1.12,"grr":0.92,"logo_ret":0.95,"cohort_size":127,"logos_retained":121,"arr_prior":705568.44,"arr_now":788441.16},{"month":"2022-11","nrr":1.07,"grr":0.88,"logo_ret":0.95,"cohort_size":129,"logos_retained":122,"arr_prior":725800.44,"arr_now":775968.12},{"month":"2022-12","nrr":1.07,"grr":0.9,"logo_ret":0.92,"cohort_size":132,"logos_retained":122,"arr_prior":760104.84,"arr_now":816363.72},{"month":"2023-01","nrr":1.04,"grr":0.89,"logo_ret":0.91,"cohort_size":136,"logos_retained":124,"arr_prior":786936.84,"arr_now":816099.12},{"month":"2023-02","nrr":1.0,"grr":0.85,"logo_ret":0.86,"cohort_size":137,"logos_retained":118,"arr_prior":789911.04,"arr_now":791440.92},{"month":"2023-03","nrr":1.04,"grr":0.87,"logo_ret":0.89,"cohort_size":145,"logos_retained":129,"arr_prior":859226.16,"arr_now":889732.32},{"month":"2023-04","nrr":1.02,"grr":0.86,"logo_ret":0.89,"cohort_size":147,"logos_retained":131,"arr_prior":895500.24,"arr_now":912749.28},{"month":"2023-05","nrr":0.94,"grr":0.79,"logo_ret":0.89,"cohort_size":149,"logos_retained":132,"arr_prior":1017769.08,"arr_now":955180.08},{"month":"2023-06","nrr":1.03,"grr":0.86,"logo_ret":0.88,"cohort_size":156,"logos_retained":138,"arr_prior":1003593.24,"arr_now":1036466.88},{"month":"2023-07","nrr":1.02,"grr":0.85,"logo_ret":0.88,"cohort_size":160,"logos_retained":140,"arr_prior":1021054.08,"arr_now":1039213.68},{"month":"2023-08","nrr":1.03,"grr":0.86,"logo_ret":0.9,"cohort_size":158,"logos_retained":142,"arr_prior":1048749.08,"arr_now":1082323.8},{"month":"2023-09","nrr":1.03,"grr":0.87,"logo_ret":0.89,"cohort_size":160,"logos_retained":142,"arr_prior":1085685.12,"arr_now":1123337.88},{"month":"2023-10","nrr":1.03,"grr":0.87,"logo_ret":0.88,"cohort_size":167,"logos_retained":147,"arr_prior":1132956.96,"arr_now":1166344.32},{"month":"2023-11","nrr":0.99,"grr":0.83,"logo_ret":0.85,"cohort_size":172,"logos_retained":147,"arr_prior":1140894.84,"arr_now":1134723.24},{"month":"2023-12","nrr":0.98,"grr":0.83,"logo_ret":0.87,"cohort_size":173,"logos_retained":150,"arr_prior":1175011.44,"arr_now":1152144.12},{"month":"2024-01","nrr":0.97,"grr":0.83,"logo_ret":0.87,"cohort_size":176,"logos_retained":153,"arr_prior":1203821.76,"arr_now":1164763.32},{"month":"2024-02","nrr":0.99,"grr":0.84,"logo_ret":0.87,"cohort_size":169,"logos_retained":147,"arr_prior":1167355.68,"arr_now":1161028.08},{"month":"2024-03","nrr":0.99,"grr":0.85,"logo_ret":0.88,"cohort_size":178,"logos_retained":156,"arr_prior":1219569.24,"arr_now":1212467.04},{"month":"2024-04","nrr":0.97,"grr":0.83,"logo_ret":0.88,"cohort_size":180,"logos_retained":158,"arr_prior":1247270.16,"arr_now":1206145.08},{"month":"2024-05","nrr":0.95,"grr":0.83,"logo_ret":0.89,"cohort_size":183,"logos_retained":163,"arr_prior":1314759.6,"arr_now":1248432.84},{"month":"2024-06","nrr":0.88,"grr":0.78,"logo_ret":0.87,"cohort_size":182,"logos_retained":158,"arr_prior":1344966.64,"arr_now":1185533.88},{"month":"2024-07","nrr":0.87,"grr":0.77,"logo_ret":0.88,"cohort_size":184,"logos_retained":161,"arr_prior":1366820.32,"arr_now":1190714.04},{"month":"2024-08","nrr":0.89,"grr":0.78,"logo_ret":0.87,"cohort_size":188,"logos_retained":164,"arr_prior":1394545.24,"arr_now":1236420.36},{"month":"2024-09","nrr":0.89,"grr":0.78,"logo_ret":0.9,"cohort_size":186,"logos_retained":167,"arr_prior":1412036.56,"arr_now":1259758.32},{"month":"2024-10","nrr":0.9,"grr":0.79,"logo_ret":0.89,"cohort_size":189,"logos_retained":168,"arr_prior":1433680.24,"arr_now":1286761.8},{"month":"2024-11","nrr":0.89,"grr":0.8,"logo_ret":0.9,"cohort_size":186,"logos_retained":168,"arr_prior":1420455.24,"arr_now":1267965.72},{"month":"2024-12","nrr":0.9,"grr":0.81,"logo_ret":0.9,"cohort_size":188,"logos_retained":170,"arr_prior":1415118.4,"arr_now":1276538.28},{"month":"2025-01","nrr":0.88,"grr":0.78,"logo_ret":0.88,"cohort_size":189,"logos_retained":166,"arr_prior":1411967.68,"arr_now":1238840.76},{"month":"2025-02","nrr":0.86,"grr":0.76,"logo_ret":0.85,"cohort_size":189,"logos_retained":160,"arr_prior":1441071.96,"arr_now":1235582.76},{"month":"2025-03","nrr":0.85,"grr":0.77,"logo_ret":0.86,"cohort_size":188,"logos_retained":161,"arr_prior":1450283.88,"arr_now":1230097.68},{"month":"2025-04","nrr":0.86,"grr":0.77,"logo_ret":0.85,"cohort_size":191,"logos_retained":163,"arr_prior":1448752.92,"arr_now":1238846.52},{"month":"2025-05","nrr":0.81,"grr":0.72,"logo_ret":0.82,"cohort_size":191,"logos_retained":156,"arr_prior":1435790.4,"arr_now":1165017.68},{"month":"2025-06","nrr":0.83,"grr":0.74,"logo_ret":0.8,"cohort_size":187,"logos_retained":150,"arr_prior":1374376.44,"arr_now":1134932.84},{"month":"2025-07","nrr":0.83,"grr":0.72,"logo_ret":0.8,"cohort_size":188,"logos_retained":150,"arr_prior":1359371.76,"arr_now":1129175.48},{"month":"2025-08","nrr":0.83,"grr":0.71,"logo_ret":0.79,"cohort_size":189,"logos_retained":150,"arr_prior":1365878.04,"arr_now":1131198.21},{"month":"2025-09","nrr":0.85,"grr":0.69,"logo_ret":0.78,"cohort_size":190,"logos_retained":148,"arr_prior":1385444.04,"arr_now":1176057.12},{"month":"2025-10","nrr":0.76,"grr":0.69,"logo_ret":0.76,"cohort_size":188,"logos_retained":143,"arr_prior":1426159.56,"arr_now":1086228.0},{"month":"2025-11","nrr":0.75,"grr":0.69,"logo_ret":0.75,"cohort_size":187,"logos_retained":140,"arr_prior":1404066.36,"arr_now":1050867.96},{"month":"2025-12","nrr":0.75,"grr":0.68,"logo_ret":0.74,"cohort_size":190,"logos_retained":140,"arr_prior":1417466.04,"arr_now":1059103.32},{"month":"2026-01","nrr":0.76,"grr":0.69,"logo_ret":0.73,"cohort_size":184,"logos_retained":135,"arr_prior":1361692.68,"arr_now":1030160.28},{"month":"2026-02","nrr":0.75,"grr":0.7,"logo_ret":0.74,"cohort_size":180,"logos_retained":133,"arr_prior":1367884.56,"arr_now":1031966.76},{"month":"2026-03","nrr":0.77,"grr":0.72,"logo_ret":0.75,"cohort_size":183,"logos_retained":138,"arr_prior":1373336.4,"arr_now":1056124.68}],"ltm_parent":[{"month":"2021-01","nrr":1.64,"grr":0.98,"logo_ret":0.98,"cohort_size":48,"logos_retained":47,"arr_prior":108284.28,"arr_now":177674.28},{"month":"2021-02","nrr":1.38,"grr":0.97,"logo_ret":0.93,"cohort_size":46,"logos_retained":43,"arr_prior":100314.24,"arr_now":138023.28},{"month":"2021-03","nrr":1.62,"grr":0.97,"logo_ret":0.98,"cohort_size":50,"logos_retained":49,"arr_prior":116643.24,"arr_now":189025.68},{"month":"2021-04","nrr":1.59,"grr":0.96,"logo_ret":0.98,"cohort_size":50,"logos_retained":49,"arr_prior":119523.24,"arr_now":189710.28},{"month":"2021-05","nrr":1.52,"grr":0.97,"logo_ret":0.98,"cohort_size":54,"logos_retained":53,"arr_prior":142737.24,"arr_now":217466.28},{"month":"2021-06","nrr":1.41,"grr":0.93,"logo_ret":0.96,"cohort_size":57,"logos_retained":55,"arr_prior":166965.24,"arr_now":236198.28},{"month":"2021-07","nrr":1.25,"grr":0.91,"logo_ret":0.95,"cohort_size":61,"logos_retained":58,"arr_prior":202293.24,"arr_now":251985.36},{"month":"2021-08","nrr":1.29,"grr":0.96,"logo_ret":0.98,"cohort_size":65,"logos_retained":64,"arr_prior":211938.24,"arr_now":273982.32},{"month":"2021-09","nrr":1.29,"grr":0.96,"logo_ret":1.0,"cohort_size":63,"logos_retained":63,"arr_prior":203861.4,"arr_now":262795.32},{"month":"2021-10","nrr":1.14,"grr":0.89,"logo_ret":1.0,"cohort_size":67,"logos_retained":67,"arr_prior":274415.4,"arr_now":313661.28},{"month":"2021-11","nrr":1.28,"grr":0.89,"logo_ret":0.99,"cohort_size":75,"logos_retained":74,"arr_prior":332347.44,"arr_now":424139.64},{"month":"2021-12","nrr":1.23,"grr":0.9,"logo_ret":0.99,"cohort_size":80,"logos_retained":79,"arr_prior":365811.36,"arr_now":450899.64},{"month":"2022-01","nrr":1.22,"grr":0.91,"logo_ret":1.0,"cohort_size":84,"logos_retained":84,"arr_prior":400149.36,"arr_now":488301.84},{"month":"2022-02","nrr":1.22,"grr":0.92,"logo_ret":0.95,"cohort_size":80,"logos_retained":76,"arr_prior":350945.16,"arr_now":426850.56},{"month":"2022-03","nrr":1.24,"grr":0.96,"logo_ret":0.99,"cohort_size":94,"logos_retained":93,"arr_prior":455538.72,"arr_now":566874.48},{"month":"2022-04","nrr":1.26,"grr":0.96,"logo_ret":0.99,"cohort_size":96,"logos_retained":95,"arr_prior":473536.32,"arr_now":594371.16},{"month":"2022-05","nrr":1.23,"grr":0.96,"logo_ret":0.98,"cohort_size":99,"logos_retained":97,"arr_prior":533246.76,"arr_now":658438.92},{"month":"2022-06","nrr":1.27,"grr":0.98,"logo_ret":0.98,"cohort_size":105,"logos_retained":103,"arr_prior":555990.72,"arr_now":706851.12},{"month":"2022-07","nrr":1.22,"grr":0.96,"logo_ret":1.0,"cohort_size":108,"logos_retained":108,"arr_prior":586214.76,"arr_now":718014.24},{"month":"2022-08","nrr":1.16,"grr":0.93,"logo_ret":0.95,"cohort_size":111,"logos_retained":106,"arr_prior":617979.72,"arr_now":716247.24},{"month":"2022-09","nrr":1.14,"grr":0.92,"logo_ret":0.95,"cohort_size":115,"logos_retained":109,"arr_prior":687193.56,"arr_now":781393.08},{"month":"2022-10","nrr":1.15,"grr":0.92,"logo_ret":0.96,"cohort_size":120,"logos_retained":115,"arr_prior":705568.44,"arr_now":810441.0},{"month":"2022-11","nrr":1.09,"grr":0.88,"logo_ret":0.95,"cohort_size":121,"logos_retained":115,"arr_prior":725800.44,"arr_now":793968.0},{"month":"2022-12","nrr":1.1,"grr":0.91,"logo_ret":0.93,"cohort_size":124,"logos_retained":115,"arr_prior":760104.84,"arr_now":834363.6},{"month":"2023-01","nrr":1.07,"grr":0.89,"logo_ret":0.91,"cohort_size":128,"logos_retained":117,"arr_prior":786936.84,"arr_now":838098.96},{"month":"2023-02","nrr":1.02,"grr":0.85,"logo_ret":0.87,"cohort_size":128,"logos_retained":111,"arr_prior":789911.04,"arr_now":809440.8},{"month":"2023-03","nrr":1.06,"grr":0.87,"logo_ret":0.89,"cohort_size":136,"logos_retained":121,"arr_prior":859226.16,"arr_now":907732.2},{"month":"2023-04","nrr":1.07,"grr":0.87,"logo_ret":0.89,"cohort_size":137,"logos_retained":122,"arr_prior":895500.24,"arr_now":957999.0},{"month":"2023-05","nrr":0.98,"grr":0.81,"logo_ret":0.89,"cohort_size":139,"logos_retained":124,"arr_prior":1017769.08,"arr_now":1000429.8},{"month":"2023-06","nrr":1.09,"grr":0.88,"logo_ret":0.89,"cohort_size":146,"logos_retained":130,"arr_prior":1003593.24,"arr_now":1089366.6},{"month":"2023-07","nrr":1.07,"grr":0.87,"logo_ret":0.89,"cohort_size":149,"logos_retained":132,"arr_prior":1021054.08,"arr_now":1088113.44},{"month":"2023-08","nrr":1.09,"grr":0.88,"logo_ret":0.9,"cohort_size":147,"logos_retained":133,"arr_prior":1048749.08,"arr_now":1145223.36},{"month":"2023-09","nrr":1.07,"grr":0.88,"logo_ret":0.9,"cohort_size":146,"logos_retained":131,"arr_prior":1085685.12,"arr_now":1157237.64},{"month":"2023-10","nrr":1.06,"grr":0.89,"logo_ret":0.9,"cohort_size":153,"logos_retained":137,"arr_prior":1132956.96,"arr_now":1203244.32},{"month":"2023-11","nrr":1.02,"grr":0.84,"logo_ret":0.87,"cohort_size":157,"logos_retained":136,"arr_prior":1140894.84,"arr_now":1163973.24},{"month":"2023-12","nrr":1.01,"grr":0.86,"logo_ret":0.89,"cohort_size":158,"logos_retained":140,"arr_prior":1175011.44,"arr_now":1189394.08},{"month":"2024-01","nrr":1.0,"grr":0.86,"logo_ret":0.88,"cohort_size":160,"logos_retained":141,"arr_prior":1203821.76,"arr_now":1198013.32},{"month":"2024-02","nrr":1.03,"grr":0.87,"logo_ret":0.88,"cohort_size":154,"logos_retained":136,"arr_prior":1167355.68,"arr_now":1206778.08},{"month":"2024-03","nrr":1.03,"grr":0.87,"logo_ret":0.89,"cohort_size":162,"logos_retained":144,"arr_prior":1219569.24,"arr_now":1253717.04},{"month":"2024-04","nrr":1.0,"grr":0.86,"logo_ret":0.89,"cohort_size":163,"logos_retained":145,"arr_prior":1247270.16,"arr_now":1245145.08},{"month":"2024-05","nrr":0.98,"grr":0.85,"logo_ret":0.9,"cohort_size":167,"logos_retained":150,"arr_prior":1314759.6,"arr_now":1287432.84},{"month":"2024-06","nrr":0.91,"grr":0.8,"logo_ret":0.89,"cohort_size":166,"logos_retained":147,"arr_prior":1344966.64,"arr_now":1224533.88},{"month":"2024-07","nrr":0.9,"grr":0.79,"logo_ret":0.89,"cohort_size":169,"logos_retained":151,"arr_prior":1366820.32,"arr_now":1229714.04},{"month":"2024-08","nrr":0.9,"grr":0.8,"logo_ret":0.89,"cohort_size":172,"logos_retained":153,"arr_prior":1394545.24,"arr_now":1255420.32},{"month":"2024-09","nrr":0.91,"grr":0.8,"logo_ret":0.91,"cohort_size":171,"logos_retained":156,"arr_prior":1412036.56,"arr_now":1278758.28},{"month":"2024-10","nrr":0.91,"grr":0.8,"logo_ret":0.9,"cohort_size":174,"logos_retained":156,"arr_prior":1433680.24,"arr_now":1302761.76},{"month":"2024-11","nrr":0.9,"grr":0.81,"logo_ret":0.91,"cohort_size":171,"logos_retained":156,"arr_prior":1420455.24,"arr_now":1283965.68},{"month":"2024-12","nrr":0.91,"grr":0.83,"logo_ret":0.91,"cohort_size":172,"logos_retained":157,"arr_prior":1415118.4,"arr_now":1289038.2},{"month":"2025-01","nrr":0.88,"grr":0.78,"logo_ret":0.88,"cohort_size":172,"logos_retained":152,"arr_prior":1411967.68,"arr_now":1238840.76},{"month":"2025-02","nrr":0.86,"grr":0.77,"logo_ret":0.85,"cohort_size":172,"logos_retained":147,"arr_prior":1441071.96,"arr_now":1243832.64},{"month":"2025-03","nrr":0.85,"grr":0.77,"logo_ret":0.86,"cohort_size":171,"logos_retained":147,"arr_prior":1450283.88,"arr_now":1238347.56},{"month":"2025-04","nrr":0.86,"grr":0.77,"logo_ret":0.86,"cohort_size":174,"logos_retained":149,"arr_prior":1448752.92,"arr_now":1247096.4},{"month":"2025-05","nrr":0.82,"grr":0.72,"logo_ret":0.84,"cohort_size":174,"logos_retained":146,"arr_prior":1435790.4,"arr_now":1173267.56},{"month":"2025-06","nrr":0.83,"grr":0.74,"logo_ret":0.82,"cohort_size":172,"logos_retained":141,"arr_prior":1374376.44,"arr_now":1143182.72},{"month":"2025-07","nrr":0.84,"grr":0.72,"logo_ret":0.81,"cohort_size":174,"logos_retained":141,"arr_prior":1359371.76,"arr_now":1143475.28},{"month":"2025-08","nrr":0.84,"grr":0.71,"logo_ret":0.81,"cohort_size":175,"logos_retained":141,"arr_prior":1365878.04,"arr_now":1150997.97},{"month":"2025-09","nrr":0.87,"grr":0.69,"logo_ret":0.79,"cohort_size":176,"logos_retained":139,"arr_prior":1385444.04,"arr_now":1203856.8},{"month":"2025-10","nrr":0.79,"grr":0.69,"logo_ret":0.77,"cohort_size":174,"logos_retained":134,"arr_prior":1426159.56,"arr_now":1120360.32},{"month":"2025-11","nrr":0.77,"grr":0.69,"logo_ret":0.76,"cohort_size":173,"logos_retained":131,"arr_prior":1404066.36,"arr_now":1085000.28},{"month":"2025-12","nrr":0.77,"grr":0.68,"logo_ret":0.74,"cohort_size":175,"logos_retained":130,"arr_prior":1417466.04,"arr_now":1090735.56},{"month":"2026-01","nrr":0.78,"grr":0.69,"logo_ret":0.74,"cohort_size":169,"logos_retained":125,"arr_prior":1361692.68,"arr_now":1061792.52},{"month":"2026-02","nrr":0.77,"grr":0.7,"logo_ret":0.74,"cohort_size":164,"logos_retained":122,"arr_prior":1367884.56,"arr_now":1057932.48},{"month":"2026-03","nrr":0.78,"grr":0.72,"logo_ret":0.76,"cohort_size":166,"logos_retained":126,"arr_prior":1373336.4,"arr_now":1075334.04}],"movements":[{"month":"2025-04","workspace_id":"22797206","company":"Alliants","parent":"Alliants","prev_arr":6000.0,"cur_arr":0.0,"delta":-6000.0,"movement":"Churn"},{"month":"2025-04","workspace_id":"752425","company":"Butte County","parent":"Butte County","prev_arr":5472.0,"cur_arr":0.0,"delta":-5472.0,"movement":"Churn"},{"month":"2025-04","workspace_id":"8645386","company":"Elwood Staffing","parent":"Elwood Staffing","prev_arr":3132.0,"cur_arr":1740.0,"delta":-1392.0,"movement":"Downsell"},{"month":"2025-04","workspace_id":"16201182","company":"Employee Benefits Corp (EBC)","parent":"Employee Benefits Corp (EBC)","prev_arr":10500.0,"cur_arr":11499.96,"delta":999.96,"movement":"Upsell"},{"month":"2025-04","workspace_id":"6348782","company":"Fastenal","parent":"Fastenal","prev_arr":46575.0,"cur_arr":47149.92,"delta":574.92,"movement":"Upsell"},{"month":"2025-04","workspace_id":"4613244","company":"Golden State Warriors, LLC","parent":"Golden State Warriors, LLC","prev_arr":28200.0,"cur_arr":34999.92,"delta":6799.92,"movement":"Upsell"},{"month":"2025-04","workspace_id":"878709","company":"GoTo.com","parent":"GoTo.com","prev_arr":2400.0,"cur_arr":0.0,"delta":-2400.0,"movement":"Churn"},{"month":"2025-04","workspace_id":"18284492","company":"Green Bay Packers","parent":"Green Bay Packers","prev_arr":16620.0,"cur_arr":16200.0,"delta":-420.0,"movement":"Downsell"},{"month":"2025-04","workspace_id":"22055123","company":"Hart Howerton","parent":"Hart Howerton","prev_arr":0.0,"cur_arr":9999.96,"delta":9999.96,"movement":"New"},{"month":"2025-04","workspace_id":"25675160","company":"Mayo Clinic","parent":"Mayo Clinic","prev_arr":3999.96,"cur_arr":297.0,"delta":-3702.96,"movement":"Downsell"},{"month":"2025-04","workspace_id":"10187547","company":"Mayo Clinic -HR","parent":"Mayo Clinic","prev_arr":7599.96,"cur_arr":3999.96,"delta":-3600.0,"movement":"Downsell"},{"month":"2025-04","workspace_id":"1344742","company":"MLKCH","parent":"MLKCH","prev_arr":3051.0,"cur_arr":1440.0,"delta":-1611.0,"movement":"Downsell"},{"month":"2025-04","workspace_id":"36022044","company":"Rodatec","parent":"Rodatec","prev_arr":0.0,"cur_arr":147.0,"delta":147.0,"movement":"New"},{"month":"2025-04","workspace_id":"1661793","company":"Vlaandere","parent":"Vlaandere","prev_arr":0.0,"cur_arr":1908.0,"delta":1908.0,"movement":"New"},{"month":"2025-05","workspace_id":"752425","company":"Butte County","parent":"Butte County","prev_arr":0.0,"cur_arr":864.0,"delta":864.0,"movement":"New"},{"month":"2025-05","workspace_id":"35047643","company":"Casco Pet","parent":"Casco Pet","prev_arr":0.0,"cur_arr":14250.0,"delta":14250.0,"movement":"New"},{"month":"2025-05","workspace_id":"832094","company":"GALP Energia","parent":"GALP Energia","prev_arr":3499.92,"cur_arr":0.0,"delta":-3499.92,"movement":"Churn"},{"month":"2025-05","workspace_id":"14104750","company":"Mat-Su Borough","parent":"Mat-Su Borough","prev_arr":5562.48,"cur_arr":5784.96,"delta":222.48,"movement":"Upsell"},{"month":"2025-05","workspace_id":"13493233","company":"Mayo","parent":"Mayo Clinic","prev_arr":900.0,"cur_arr":0.0,"delta":-900.0,"movement":"Churn"},{"month":"2025-05","workspace_id":"18433019","company":"Mayo Clinic","parent":"Mayo Clinic","prev_arr":3000.0,"cur_arr":0.0,"delta":-3000.0,"movement":"Churn"},{"month":"2025-05","workspace_id":"18543519","company":"NELSON Worldwide","parent":"NELSON Worldwide","prev_arr":19999.92,"cur_arr":0.0,"delta":-19999.92,"movement":"Churn"},{"month":"2025-05","workspace_id":"19855258","company":"Ohio Department of Developmental Disabilities","parent":"Ohio Department of Developmental Disabilities","prev_arr":9999.96,"cur_arr":0.0,"delta":-9999.96,"movement":"Churn"},{"month":"2025-05","workspace_id":"5696996","company":"PMA Group","parent":"PMA Group","prev_arr":9299.88,"cur_arr":10730.64,"delta":1430.76,"movement":"Upsell"},{"month":"2025-05","workspace_id":"14733541","company":"Qualtrics","parent":"Qualtrics","prev_arr":15000.0,"cur_arr":0.0,"delta":-15000.0,"movement":"Churn"},{"month":"2025-05","workspace_id":"552519","company":"Reedley College","parent":"Reedley College","prev_arr":3502.44,"cur_arr":3500.0,"delta":-2.44,"movement":"Downsell"},{"month":"2025-05","workspace_id":"15532322","company":"Region 10 State","parent":"Region 10 State","prev_arr":4232.16,"cur_arr":3341.16,"delta":-891.0,"movement":"Downsell"},{"month":"2025-05","workspace_id":"16981149","company":"Seattle Sounders FC","parent":"Seattle Sounders FC","prev_arr":9600.0,"cur_arr":12600.0,"delta":3000.0,"movement":"Upsell"},{"month":"2025-05","workspace_id":"35630833","company":"Sporting JAX","parent":"Sporting JAX","prev_arr":5400.0,"cur_arr":6000.0,"delta":600.0,"movement":"Upsell"},{"month":"2025-05","workspace_id":"819132","company":"The Imagine Institute","parent":"The Imagine Institute","prev_arr":6372.0,"cur_arr":5319.0,"delta":-1053.0,"movement":"Downsell"},{"month":"2025-05","workspace_id":"30136404","company":"U.S. Securities and Exchange Commission","parent":"U.S. Securities and Exchange Commission","prev_arr":12499.92,"cur_arr":0.0,"delta":-12499.92,"movement":"Churn"},{"month":"2025-05","workspace_id":"14972664","company":"U.S. Securities and Exchange Commission","parent":"U.S. Securities and Exchange Commission","prev_arr":12499.92,"cur_arr":0.0,"delta":-12499.92,"movement":"Churn"},{"month":"2025-06","workspace_id":"2018503","company":"Denver Broncos","parent":"Denver Broncos","prev_arr":12499.92,"cur_arr":6249.96,"delta":-6249.96,"movement":"Downsell"},{"month":"2025-06","workspace_id":"10516363","company":"HNTB Corporation","parent":"HNTB Corporation","prev_arr":1782.0,"cur_arr":0.0,"delta":-1782.0,"movement":"Churn"},{"month":"2025-06","workspace_id":"11940468","company":"IMH Healthcare","parent":"IMH Healthcare","prev_arr":1782.0,"cur_arr":2376.0,"delta":594.0,"movement":"Upsell"},{"month":"2025-06","workspace_id":"13212572","company":"Iota","parent":"Iota","prev_arr":4500.0,"cur_arr":864.0,"delta":-3636.0,"movement":"Downsell"},{"month":"2025-06","workspace_id":"6047555","company":"Lincoln Learning Solutions","parent":"Lincoln Learning Solutions","prev_arr":225.0,"cur_arr":0.0,"delta":-225.0,"movement":"Churn"},{"month":"2025-06","workspace_id":"1344742","company":"MLKCH","parent":"MLKCH","prev_arr":1440.0,"cur_arr":5184.0,"delta":3744.0,"movement":"Upsell"},{"month":"2025-06","workspace_id":"13504975","company":"Reimagined Parking","parent":"Reimagined Parking","prev_arr":3999.96,"cur_arr":2250.0,"delta":-1749.96,"movement":"Downsell"},{"month":"2025-06","workspace_id":"36676806","company":"Reyes Coca Cola Bottling (RCCB)","parent":"Reyes Coca Cola Bottling (RCCB)","prev_arr":0.0,"cur_arr":9000.0,"delta":9000.0,"movement":"New"},{"month":"2025-06","workspace_id":"8473903","company":"SGC Horizon","parent":"SGC Horizon","prev_arr":8250.0,"cur_arr":0.0,"delta":-8250.0,"movement":"Churn"},{"month":"2025-06","workspace_id":"8347925","company":"St. Hope Foundation","parent":"St. Hope Foundation","prev_arr":14355.0,"cur_arr":11745.0,"delta":-2610.0,"movement":"Downsell"},{"month":"2025-06","workspace_id":"4109351","company":"Suivo","parent":"Suivo","prev_arr":972.0,"cur_arr":0.0,"delta":-972.0,"movement":"Churn"},{"month":"2025-06","workspace_id":"9416255","company":"UNDP","parent":"UNDP","prev_arr":948.0,"cur_arr":0.0,"delta":-948.0,"movement":"Churn"},{"month":"2025-06","workspace_id":"12184205","company":"USA TODAY NETWORK Ventures","parent":"USA TODAY NETWORK Ventures","prev_arr":7999.92,"cur_arr":0.0,"delta":-7999.92,"movement":"Churn"},{"month":"2025-07","workspace_id":"32818611","company":"Aegean Airlines","parent":"Aegean Airlines","prev_arr":0.0,"cur_arr":6000.0,"delta":6000.0,"movement":"New"},{"month":"2025-07","workspace_id":"15473159","company":"ATW Health","parent":"ATW Health","prev_arr":2499.96,"cur_arr":2500.2,"delta":0.24,"movement":"Upsell"},{"month":"2025-07","workspace_id":"36032100","company":"Carlyle","parent":"Carlyle","prev_arr":0.0,"cur_arr":6000.0,"delta":6000.0,"movement":"New"},{"month":"2025-07","workspace_id":"634778","company":"EmployBridge","parent":"EmployBridge","prev_arr":3000.0,"cur_arr":0.0,"delta":-3000.0,"movement":"Churn"},{"month":"2025-07","workspace_id":"36934921","company":"Express Services, Inc., d/b/a Express Employment Professionals","parent":"Express Services, Inc., d/b/a Express Employment Professionals","prev_arr":0.0,"cur_arr":19999.92,"delta":19999.92,"movement":"New"},{"month":"2025-07","workspace_id":"6348782","company":"Fastenal","parent":"Fastenal","prev_arr":47149.92,"cur_arr":47724.96,"delta":575.04,"movement":"Upsell"},{"month":"2025-07","workspace_id":"10829093","company":"Florida Panthers","parent":"Florida Panthers","prev_arr":15199.92,"cur_arr":16500.0,"delta":1300.08,"movement":"Upsell"},{"month":"2025-07","workspace_id":"20475350","company":"FMR - Fidelity","parent":"Fidelity","prev_arr":0.0,"cur_arr":3300.0,"delta":3300.0,"movement":"New"},{"month":"2025-07","workspace_id":"35862901","company":"FMR - Fidelity","parent":"Fidelity","prev_arr":0.0,"cur_arr":2749.92,"delta":2749.92,"movement":"New"},{"month":"2025-07","workspace_id":"14243861","company":"Nationwide Financial","parent":"Nationwide Financial","prev_arr":23000.04,"cur_arr":0.0,"delta":-23000.04,"movement":"Churn"},{"month":"2025-07","workspace_id":"36869466","company":"New Orleans Saints","parent":"New Orleans Saints","prev_arr":0.0,"cur_arr":13599.96,"delta":13599.96,"movement":"New"},{"month":"2025-07","workspace_id":"7717118","company":"QBE Services Groups (QSG)","parent":"QBE","prev_arr":31050.0,"cur_arr":33637.44,"delta":2587.44,"movement":"Upsell"},{"month":"2025-07","workspace_id":"36022044","company":"Rodatec","parent":"Rodatec","prev_arr":147.0,"cur_arr":4500.0,"delta":4353.0,"movement":"Upsell"},{"month":"2025-07","workspace_id":"30139688","company":"SGWS","parent":"SGWS","prev_arr":2250.0,"cur_arr":7999.92,"delta":5749.92,"movement":"Upsell"},{"month":"2025-07","workspace_id":"25568835","company":"Symetra Life Insurance Company","parent":"Symetra Life Insurance Company","prev_arr":7500.0,"cur_arr":9000.0,"delta":1500.0,"movement":"Upsell"},{"month":"2025-07","workspace_id":"5604741","company":"TrueSense Marketing","parent":"TrueSense Marketing","prev_arr":24000.0,"cur_arr":12300.0,"delta":-11700.0,"movement":"Downsell"},{"month":"2025-07","workspace_id":"2121755","company":"UKG Inc","parent":"UKG Inc","prev_arr":9600.0,"cur_arr":10800.0,"delta":1200.0,"movement":"Upsell"},{"month":"2025-07","workspace_id":"3691578","company":"USAID","parent":"USAID","prev_arr":2970.0,"cur_arr":0.0,"delta":-2970.0,"movement":"Churn"},{"month":"2025-07","workspace_id":"31735295","company":"Vanguard Truck Centers","parent":"Vanguard Truck Centers","prev_arr":5400.0,"cur_arr":6000.0,"delta":600.0,"movement":"Upsell"},{"month":"2025-08","workspace_id":"15473159","company":"ATW Health","parent":"ATW Health","prev_arr":2500.2,"cur_arr":208.35,"delta":-2291.85,"movement":"Downsell"},{"month":"2025-08","workspace_id":"3800118","company":"Ballard Spahr LLP","parent":"Ballard Spahr LLP","prev_arr":570.0,"cur_arr":9000.0,"delta":8430.0,"movement":"Upsell"},{"month":"2025-08","workspace_id":"10768968","company":"Capgemini","parent":"Capgemini","prev_arr":348.0,"cur_arr":0.0,"delta":-348.0,"movement":"Churn"},{"month":"2025-08","workspace_id":"1464975","company":"CT Department of Public Health","parent":"CT Department of Public Health","prev_arr":2499.96,"cur_arr":1440.0,"delta":-1059.96,"movement":"Downsell"},{"month":"2025-08","workspace_id":"5329789","company":"Dallas Cowboys","parent":"Dallas Cowboys","prev_arr":7777.8,"cur_arr":7388.88,"delta":-388.92,"movement":"Downsell"},{"month":"2025-08","workspace_id":"6348782","company":"Fastenal","parent":"Fastenal","prev_arr":47724.96,"cur_arr":49449.96,"delta":1725.0,"movement":"Upsell"},{"month":"2025-08","workspace_id":"10829093","company":"Florida Panthers","parent":"Florida Panthers","prev_arr":16500.0,"cur_arr":15750.0,"delta":-750.0,"movement":"Downsell"},{"month":"2025-08","workspace_id":"36595149","company":"FMR - Fidelity","parent":"Fidelity","prev_arr":0.0,"cur_arr":5499.96,"delta":5499.96,"movement":"New"},{"month":"2025-08","workspace_id":"21106073","company":"Las Vegas Raiders","parent":"Las Vegas Raiders","prev_arr":20899.92,"cur_arr":9120.0,"delta":-11779.92,"movement":"Downsell"},{"month":"2025-08","workspace_id":"37097147","company":"NAU Country","parent":"NAU Country","prev_arr":0.0,"cur_arr":2499.96,"delta":2499.96,"movement":"New"},{"month":"2025-08","workspace_id":"28014985","company":"Piedmont Health","parent":"Piedmont Health","prev_arr":9000.0,"cur_arr":11250.0,"delta":2250.0,"movement":"Upsell"},{"month":"2025-08","workspace_id":"552519","company":"Reedley College","parent":"Reedley College","prev_arr":3500.0,"cur_arr":3499.92,"delta":-0.08,"movement":"Downsell"},{"month":"2025-08","workspace_id":"16354536","company":"RICS","parent":"RICS","prev_arr":531.0,"cur_arr":44.25,"delta":-486.75,"movement":"Downsell"},{"month":"2025-08","workspace_id":"37179053","company":"SC Dept. of Employment and Workforce","parent":"SC Dept. of Employment and Workforce","prev_arr":0.0,"cur_arr":9999.96,"delta":9999.96,"movement":"New"},{"month":"2025-08","workspace_id":"819132","company":"The Imagine Institute","parent":"The Imagine Institute","prev_arr":5319.0,"cur_arr":443.25,"delta":-4875.75,"movement":"Downsell"},{"month":"2025-08","workspace_id":"16772373","company":"The New 42nd Street","parent":"The New 42nd Street","prev_arr":4500.0,"cur_arr":0.0,"delta":-4500.0,"movement":"Churn"},{"month":"2025-08","workspace_id":"37264780","company":"Touch Medical Media","parent":"Touch Medical Media","prev_arr":0.0,"cur_arr":6000.0,"delta":6000.0,"movement":"New"},{"month":"2025-08","workspace_id":"1661793","company":"Vlaandere","parent":"Vlaandere","prev_arr":1908.0,"cur_arr":159.0,"delta":-1749.0,"movement":"Downsell"},{"month":"2025-08","workspace_id":"24074142","company":"Volunteer's of America Southwest","parent":"Volunteer's of America Southwest","prev_arr":5940.0,"cur_arr":3570.0,"delta":-2370.0,"movement":"Downsell"},{"month":"2025-09","workspace_id":"15473159","company":"ATW Health","parent":"ATW Health","prev_arr":208.35,"cur_arr":2500.2,"delta":2291.85,"movement":"Upsell"},{"month":"2025-09","workspace_id":"2562955","company":"Bassett Mechanical","parent":"Bassett Mechanical","prev_arr":2673.0,"cur_arr":3390.0,"delta":717.0,"movement":"Upsell"},{"month":"2025-09","workspace_id":"30163157","company":"Betsson Group","parent":"Betsson Group","prev_arr":6000.0,"cur_arr":0.0,"delta":-6000.0,"movement":"Churn"},{"month":"2025-09","workspace_id":"10236200","company":"Cvent","parent":"Cvent","prev_arr":27499.92,"cur_arr":0.0,"delta":-27499.92,"movement":"Churn"},{"month":"2025-09","workspace_id":"4248626","company":"Kraft Sports + Entertainment","parent":"Kraft Sports + Entertainment","prev_arr":14790.0,"cur_arr":16789.92,"delta":1999.92,"movement":"Upsell"},{"month":"2025-09","workspace_id":"25542212","company":"Mayo Clinic","parent":"Mayo Clinic","prev_arr":3999.96,"cur_arr":7999.92,"delta":3999.96,"movement":"Upsell"},{"month":"2025-09","workspace_id":"37319725","company":"Oxford Financial Group","parent":"Oxford Financial Group","prev_arr":0.0,"cur_arr":7200.0,"delta":7200.0,"movement":"New"},{"month":"2025-09","workspace_id":"3078133","company":"Proactive Dealer Solutions","parent":"Proactive Dealer Solutions","prev_arr":4536.0,"cur_arr":0.0,"delta":-4536.0,"movement":"Churn"},{"month":"2025-09","workspace_id":"1998395","company":"Proximus","parent":"Proximus","prev_arr":1782.0,"cur_arr":1737.0,"delta":-45.0,"movement":"Downsell"},{"month":"2025-09","workspace_id":"37501099","company":"QBE Ao Digital","parent":"QBE","prev_arr":0.0,"cur_arr":4999.92,"delta":4999.92,"movement":"New"},{"month":"2025-09","workspace_id":"37273883","company":"QBE NA","parent":"QBE","prev_arr":0.0,"cur_arr":3000.0,"delta":3000.0,"movement":"New"},{"month":"2025-09","workspace_id":"7717118","company":"QBE Services Groups (QSG)","parent":"QBE","prev_arr":33637.44,"cur_arr":31050.0,"delta":-2587.44,"movement":"Downsell"},{"month":"2025-09","workspace_id":"16354536","company":"RICS","parent":"RICS","prev_arr":44.25,"cur_arr":531.0,"delta":486.75,"movement":"Upsell"},{"month":"2025-09","workspace_id":"31190981","company":"Scott Insurance","parent":"Scott Insurance","prev_arr":9999.96,"cur_arr":0.0,"delta":-9999.96,"movement":"Churn"},{"month":"2025-09","workspace_id":"819132","company":"The Imagine Institute","parent":"The Imagine Institute","prev_arr":443.25,"cur_arr":5319.0,"delta":4875.75,"movement":"Upsell"},{"month":"2025-09","workspace_id":"29349790","company":"The Investment Association (IA)","parent":"The Investment Association (IA)","prev_arr":12000.0,"cur_arr":18000.0,"delta":6000.0,"movement":"Upsell"},{"month":"2025-09","workspace_id":"31735295","company":"Vanguard Truck Centers","parent":"Vanguard Truck Centers","prev_arr":6000.0,"cur_arr":72000.0,"delta":66000.0,"movement":"Upsell"},{"month":"2025-09","workspace_id":"1661793","company":"Vlaandere","parent":"Vlaandere","prev_arr":159.0,"cur_arr":1908.0,"delta":1749.0,"movement":"Upsell"},{"month":"2025-10","workspace_id":"5886095","company":"Alliant Credit Union","parent":"Alliant Credit Union","prev_arr":15000.0,"cur_arr":0.0,"delta":-15000.0,"movement":"Churn"},{"month":"2025-10","workspace_id":"26555077","company":"BDI Agency","parent":"BDI Agency","prev_arr":15199.92,"cur_arr":11599.92,"delta":-3600.0,"movement":"Downsell"},{"month":"2025-10","workspace_id":"2018503","company":"Denver Broncos","parent":"Denver Broncos","prev_arr":6249.96,"cur_arr":12499.92,"delta":6249.96,"movement":"Upsell"},{"month":"2025-10","workspace_id":"16587232","company":"Dyno Nobel","parent":"Dyno Nobel","prev_arr":6000.0,"cur_arr":3499.92,"delta":-2500.08,"movement":"Downsell"},{"month":"2025-10","workspace_id":"11802525","company":"E&S Grounding Solutions","parent":"E&S Grounding Solutions","prev_arr":2088.0,"cur_arr":0.0,"delta":-2088.0,"movement":"Churn"},{"month":"2025-10","workspace_id":"21802521","company":"FC Internazionale Milano","parent":"FC Internazionale Milano","prev_arr":4800.0,"cur_arr":6000.0,"delta":1200.0,"movement":"Upsell"},{"month":"2025-10","workspace_id":"5885206","company":"HNTB Corporation","parent":"HNTB Corporation","prev_arr":2100.0,"cur_arr":0.0,"delta":-2100.0,"movement":"Churn"},{"month":"2025-10","workspace_id":"37097147","company":"NAU Country","parent":"NAU Country","prev_arr":2499.96,"cur_arr":2916.6,"delta":416.64,"movement":"Upsell"},{"month":"2025-10","workspace_id":"1458465","company":"PROSPORT Management","parent":"PROSPORT Management","prev_arr":3828.0,"cur_arr":2088.0,"delta":-1740.0,"movement":"Downsell"},{"month":"2025-10","workspace_id":"37501099","company":"QBE Ao Digital","parent":"QBE","prev_arr":4999.92,"cur_arr":5415.96,"delta":416.04,"movement":"Upsell"},{"month":"2025-10","workspace_id":"37273883","company":"QBE NA","parent":"QBE","prev_arr":3000.0,"cur_arr":2916.6,"delta":-83.4,"movement":"Downsell"},{"month":"2025-10","workspace_id":"16354536","company":"RICS","parent":"RICS","prev_arr":531.0,"cur_arr":0.0,"delta":-531.0,"movement":"Churn"},{"month":"2025-10","workspace_id":"14606127","company":"Sound Healthcare/ Veltassa","parent":"Sound Healthcare/ Veltassa","prev_arr":6000.0,"cur_arr":0.0,"delta":-6000.0,"movement":"Churn"},{"month":"2025-10","workspace_id":"8347925","company":"St. Hope Foundation","parent":"St. Hope Foundation","prev_arr":11745.0,"cur_arr":12345.0,"delta":600.0,"movement":"Upsell"},{"month":"2025-10","workspace_id":"29349790","company":"The Investment Association (IA)","parent":"The Investment Association (IA)","prev_arr":18000.0,"cur_arr":17250.0,"delta":-750.0,"movement":"Downsell"},{"month":"2025-10","workspace_id":"31735295","company":"Vanguard Truck Centers","parent":"Vanguard Truck Centers","prev_arr":72000.0,"cur_arr":6000.0,"delta":-66000.0,"movement":"Downsell"},{"month":"2025-10","workspace_id":"24074142","company":"Volunteer's of America Southwest","parent":"Volunteer's of America Southwest","prev_arr":3570.0,"cur_arr":0.0,"delta":-3570.0,"movement":"Churn"},{"month":"2025-10","workspace_id":"36440059","company":"Unisys","parent":"Unisys","prev_arr":0.0,"cur_arr":9000.0,"delta":9000.0,"movement":"New"},{"month":"2025-11","workspace_id":"33082936","company":"Aflac","parent":"Aflac","prev_arr":9000.0,"cur_arr":6000.0,"delta":-3000.0,"movement":"Downsell"},{"month":"2025-11","workspace_id":"15473159","company":"ATW Health","parent":"ATW Health","prev_arr":2500.2,"cur_arr":0.0,"delta":-2500.2,"movement":"Churn"},{"month":"2025-11","workspace_id":"2018503","company":"Denver Broncos","parent":"Denver Broncos","prev_arr":12499.92,"cur_arr":0.0,"delta":-12499.92,"movement":"Churn"},{"month":"2025-11","workspace_id":"14896753","company":"Empresa Portuaria Nacional","parent":"Empresa Portuaria Nacional","prev_arr":3749.88,"cur_arr":0.0,"delta":-3749.88,"movement":"Churn"},{"month":"2025-11","workspace_id":"6348782","company":"Fastenal","parent":"Fastenal","prev_arr":49449.96,"cur_arr":44850.0,"delta":-4599.96,"movement":"Downsell"},{"month":"2025-11","workspace_id":"7330515","company":"PullSpark","parent":"PullSpark","prev_arr":15000.0,"cur_arr":4740.0,"delta":-10260.0,"movement":"Downsell"},{"month":"2025-11","workspace_id":"15855310","company":"RTI International","parent":"RTI International","prev_arr":6750.0,"cur_arr":4999.92,"delta":-1750.08,"movement":"Downsell"},{"month":"2025-11","workspace_id":"37918714","company":"H&R Block","parent":"H&R Block","prev_arr":0.0,"cur_arr":4999.92,"delta":4999.92,"movement":"New"},{"month":"2025-12","workspace_id":"25847521","company":"Abode Energy Mangement","parent":"Abode Energy Mangement","prev_arr":6000.0,"cur_arr":0.0,"delta":-6000.0,"movement":"Churn"},{"month":"2025-12","workspace_id":"25570481","company":"AMD","parent":"AMD","prev_arr":6999.96,"cur_arr":0.0,"delta":-6999.96,"movement":"Churn"},{"month":"2025-12","workspace_id":"2264117","company":"Ameritas Life Insurance Corp","parent":"Ameritas Life Insurance Corp","prev_arr":27000.0,"cur_arr":30000.0,"delta":3000.0,"movement":"Upsell"},{"month":"2025-12","workspace_id":"1688628","company":"City of Chandler, AZ","parent":"City of Chandler, AZ","prev_arr":9900.0,"cur_arr":6000.0,"delta":-3900.0,"movement":"Downsell"},{"month":"2025-12","workspace_id":"2538562","company":"epfinancialsolutions.co.uk","parent":"epfinancialsolutions.co.uk","prev_arr":4800.0,"cur_arr":3999.96,"delta":-800.04,"movement":"Downsell"},{"month":"2025-12","workspace_id":"21802521","company":"FC Internazionale Milano","parent":"FC Internazionale Milano","prev_arr":6000.0,"cur_arr":3000.0,"delta":-3000.0,"movement":"Downsell"},{"month":"2025-12","workspace_id":"17337404","company":"Innovative Business Concepts","parent":"Innovative Business Concepts","prev_arr":6000.0,"cur_arr":0.0,"delta":-6000.0,"movement":"Churn"},{"month":"2025-12","workspace_id":"2574090","company":"Mauldin & Jenkins","parent":"Mauldin & Jenkins","prev_arr":7800.0,"cur_arr":8400.0,"delta":600.0,"movement":"Upsell"},{"month":"2025-12","workspace_id":"17610489","company":"OMA","parent":"OMA","prev_arr":6499.92,"cur_arr":3249.96,"delta":-3249.96,"movement":"Downsell"},{"month":"2025-12","workspace_id":"16917112","company":"PlayCore","parent":"PlayCore","prev_arr":6999.96,"cur_arr":0.0,"delta":-6999.96,"movement":"Churn"},{"month":"2025-12","workspace_id":"5696996","company":"PMA Group","parent":"PMA Group","prev_arr":10730.64,"cur_arr":4999.92,"delta":-5730.72,"movement":"Downsell"},{"month":"2025-12","workspace_id":"4778794","company":"Sirva","parent":"Sirva","prev_arr":2088.0,"cur_arr":9000.0,"delta":6912.0,"movement":"Upsell"},{"month":"2025-12","workspace_id":"17882401","company":"Source2","parent":"Source2","prev_arr":4500.0,"cur_arr":6750.0,"delta":2250.0,"movement":"Upsell"},{"month":"2025-12","workspace_id":"8347925","company":"St. Hope Foundation","parent":"St. Hope Foundation","prev_arr":12345.0,"cur_arr":11745.0,"delta":-600.0,"movement":"Downsell"},{"month":"2025-12","workspace_id":"5604741","company":"TrueSense Marketing","parent":"TrueSense Marketing","prev_arr":12300.0,"cur_arr":19680.0,"delta":7380.0,"movement":"Upsell"},{"month":"2025-12","workspace_id":"1402508","company":"WOW Inc","parent":"WOW Inc","prev_arr":2376.0,"cur_arr":6750.0,"delta":4374.0,"movement":"Upsell"},{"month":"2025-12","workspace_id":"38264677","company":"National Safety Council","parent":"National Safety Council","prev_arr":0.0,"cur_arr":4320.0,"delta":4320.0,"movement":"New"},{"month":"2025-12","workspace_id":"3634290","company":"\nLuxembourg Convention Bureau","parent":"\nLuxembourg Convention Bureau","prev_arr":0.0,"cur_arr":2376.0,"delta":2376.0,"movement":"New"},{"month":"2025-12","workspace_id":"134188","company":"Gift of Life","parent":"Gift of Life","prev_arr":0.0,"cur_arr":2088.0,"delta":2088.0,"movement":"New"},{"month":"2025-12","workspace_id":"37253057","company":"QBE Australia","parent":"QBE","prev_arr":0.0,"cur_arr":3499.92,"delta":3499.92,"movement":"New"},{"month":"2026-01","workspace_id":"12994138","company":"Eurotunnel","parent":"Eurotunnel","prev_arr":2796.0,"cur_arr":0.0,"delta":-2796.0,"movement":"Churn"},{"month":"2026-01","workspace_id":"6348782","company":"Fastenal","parent":"Fastenal","prev_arr":44850.0,"cur_arr":47724.96,"delta":2874.96,"movement":"Upsell"},{"month":"2026-01","workspace_id":"18794397","company":"Greater Memphis Chamber","parent":"Greater Memphis Chamber","prev_arr":6000.0,"cur_arr":0.0,"delta":-6000.0,"movement":"Churn"},{"month":"2026-01","workspace_id":"31553483","company":"Ilitch Sports + Entertainment","parent":"Ilitch Sports + Entertainment","prev_arr":9000.0,"cur_arr":0.0,"delta":-9000.0,"movement":"Churn"},{"month":"2026-01","workspace_id":"17207451","company":"Pool Corp","parent":"Pool Corp","prev_arr":9000.0,"cur_arr":0.0,"delta":-9000.0,"movement":"Churn"},{"month":"2026-01","workspace_id":"16981149","company":"Seattle Sounders FC","parent":"Seattle Sounders FC","prev_arr":12600.0,"cur_arr":10800.0,"delta":-1800.0,"movement":"Downsell"},{"month":"2026-01","workspace_id":"8193078","company":"Service Innovation Group","parent":"Service Innovation Group","prev_arr":5346.0,"cur_arr":4500.0,"delta":-846.0,"movement":"Downsell"},{"month":"2026-01","workspace_id":"33582183","company":"Tampa Bay Sun FC","parent":"Tampa Bay Sun FC","prev_arr":9000.0,"cur_arr":0.0,"delta":-9000.0,"movement":"Churn"},{"month":"2026-01","workspace_id":"26425493","company":"VA.gov ILEAD T&I","parent":"VA.gov ILEAD T&I","prev_arr":2376.0,"cur_arr":0.0,"delta":-2376.0,"movement":"Churn"},{"month":"2026-01","workspace_id":"134188","company":"Gift of Life","parent":"Gift of Life","prev_arr":2088.0,"cur_arr":0.0,"delta":-2088.0,"movement":"Churn"},{"month":"2026-01","workspace_id":"38362773","company":"AdAdapted","parent":"AdAdapted","prev_arr":0.0,"cur_arr":12000.0,"delta":12000.0,"movement":"New"},{"month":"2026-02","workspace_id":"6348782","company":"Fastenal","parent":"Fastenal","prev_arr":47724.96,"cur_arr":49449.96,"delta":1725.0,"movement":"Upsell"},{"month":"2026-02","workspace_id":"11940468","company":"IMH Healthcare","parent":"IMH Healthcare","prev_arr":2376.0,"cur_arr":0.0,"delta":-2376.0,"movement":"Churn"},{"month":"2026-02","workspace_id":"1458465","company":"PROSPORT Management","parent":"PROSPORT Management","prev_arr":2088.0,"cur_arr":2436.0,"delta":348.0,"movement":"Upsell"},{"month":"2026-02","workspace_id":"37273883","company":"QBE NA","parent":"QBE","prev_arr":2916.6,"cur_arr":2499.96,"delta":-416.64,"movement":"Downsell"},{"month":"2026-02","workspace_id":"25568835","company":"Symetra Life Insurance Company","parent":"Symetra Life Insurance Company","prev_arr":9000.0,"cur_arr":10500.0,"delta":1500.0,"movement":"Upsell"},{"month":"2026-02","workspace_id":"8377258","company":"The Global Fund to Fight AIDS, Tuberculosis and Malaria","parent":"The Global Fund to Fight AIDS, Tuberculosis and Malaria","prev_arr":2499.96,"cur_arr":999.96,"delta":-1500.0,"movement":"Downsell"},{"month":"2026-02","workspace_id":"5604741","company":"TrueSense Marketing","parent":"TrueSense Marketing","prev_arr":19680.0,"cur_arr":18105.6,"delta":-1574.4,"movement":"Downsell"},{"month":"2026-02","workspace_id":"1402508","company":"WOW Inc","parent":"WOW Inc","prev_arr":6750.0,"cur_arr":9999.96,"delta":3249.96,"movement":"Upsell"},{"month":"2026-03","workspace_id":"20475350","company":"FMR - Fidelity","parent":"Fidelity","prev_arr":3300.0,"cur_arr":43.56,"delta":-3256.44,"movement":"Downsell"},{"month":"2026-03","workspace_id":"35862901","company":"FMR - Fidelity","parent":"Fidelity","prev_arr":2749.92,"cur_arr":2250.0,"delta":-499.92,"movement":"Downsell"},{"month":"2026-03","workspace_id":"13381442","company":"Visit Orlando","parent":"Visit Orlando","prev_arr":33249.96,"cur_arr":30000.0,"delta":-3249.96,"movement":"Downsell"},{"month":"2026-03","workspace_id":"2847010","company":"Weichert Workforce Mobility","parent":"Weichert Workforce Mobility","prev_arr":6000.0,"cur_arr":9000.0,"delta":3000.0,"movement":"Upsell"},{"month":"2026-03","workspace_id":"38805334","company":"Arcwood","parent":"Arcwood","prev_arr":0.0,"cur_arr":8250.0,"delta":8250.0,"movement":"New"},{"month":"2026-03","workspace_id":"134188","company":"Gift of Life","parent":"Gift of Life","prev_arr":0.0,"cur_arr":2610.0,"delta":2610.0,"movement":"New"}],"budget_arr":[{"month":"2025-12","budget":1250485.8,"actual":1250485.8},{"month":"2026-01","budget":1245830.16,"actual":1222454.76},{"month":"2026-02","budget":1269267.84,"actual":1223410.68},{"month":"2026-03","budget":1282032.81,"actual":1230264.36},{"month":"2026-04","budget":1288546.88,"actual":null},{"month":"2026-05","budget":1309392.88,"actual":null},{"month":"2026-06","budget":1331138.29,"actual":null},{"month":"2026-07","budget":1354110.84,"actual":null},{"month":"2026-08","budget":1363924.08,"actual":null},{"month":"2026-09","budget":1387242.26,"actual":null},{"month":"2026-10","budget":1405676.97,"actual":null},{"month":"2026-11","budget":1427756.97,"actual":null},{"month":"2026-12","budget":1447120.52,"actual":null}],"budget_churn":[{"month":"2026-01","budget":-31116.0,"actual":-40260.0},{"month":"2026-02","budget":0.0,"actual":-2376.0},{"month":"2026-03","budget":-10800.0,"actual":-0.0},{"month":"2026-04","budget":-17199.96,"actual":null},{"month":"2026-05","budget":-2250.0,"actual":null},{"month":"2026-06","budget":0.0,"actual":null},{"month":"2026-07","budget":0.0,"actual":null},{"month":"2026-08","budget":-12999.96,"actual":null},{"month":"2026-09","budget":0.0,"actual":null},{"month":"2026-10","budget":-3499.92,"actual":null},{"month":"2026-11","budget":0.0,"actual":null},{"month":"2026-12","budget":-3999.96,"actual":null}],"budget_new":[{"month":"2026-01","budget":21000.0,"actual":12000.0},{"month":"2026-02","budget":21000.0,"actual":0.0},{"month":"2026-03","budget":21000.0,"actual":10860.0},{"month":"2026-04","budget":21000.0,"actual":null},{"month":"2026-05","budget":21000.0,"actual":null},{"month":"2026-06","budget":21000.0,"actual":null},{"month":"2026-07","budget":21000.0,"actual":null},{"month":"2026-08","budget":21000.0,"actual":null},{"month":"2026-09","budget":21000.0,"actual":null},{"month":"2026-10","budget":21000.0,"actual":null},{"month":"2026-11","budget":21000.0,"actual":null},{"month":"2026-12","budget":21000.0,"actual":null}]};
 
-// ── State ──────────────────────────────────────────────────────────────
-let level = 'customer';
-let charts = {};
-
-// ── Helpers ────────────────────────────────────────────────────────────
-const fmt = v => '$' + Math.round(v).toLocaleString();
-const fmtK = v => '$' + (Math.abs(v) >= 1000 ? (v/1000).toFixed(0) + 'K' : Math.round(v));
-const pct = v => (v * 100).toFixed(1) + '%';
-const monthLabel = m => { const [y,mo] = m.split('-'); return ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'][+mo-1] + ' ' + y.slice(2); };
-const COLORS = { blue:'#4f8ef7', green:'#34d399', red:'#f87171', yellow:'#fbbf24', purple:'#a78bfa', orange:'#fb923c', teal:'#22d3ee', muted:'#8b90a7' };
-
-function destroyChart(id) { if (charts[id]) { charts[id].destroy(); delete charts[id]; } }
-
-function makeChart(id, config) {
-  destroyChart(id);
-  const ctx = document.getElementById(id);
-  if (!ctx) return;
-  charts[id] = new Chart(ctx, config);
-  return charts[id];
-}
-
-Chart.defaults.color = '#8b90a7';
-Chart.defaults.borderColor = '#2e3250';
-Chart.defaults.font.family = "-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif";
+// ── Chart.js defaults (light theme) ───────────────────────────────────
+Chart.defaults.color = '#6b7280';
+Chart.defaults.borderColor = '#e0e4ef';
+Chart.defaults.font.family = "-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif";
 Chart.defaults.font.size = 11;
 
-// ── Tab / Level control ────────────────────────────────────────────────
-function showTab(name) {
-  document.querySelectorAll('.tab-pane').forEach(p => p.classList.remove('active'));
-  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
-  document.getElementById('tab-' + name).classList.add('active');
-  document.querySelectorAll('.tab').forEach(t => { if (t.textContent.trim().toLowerCase().replace(/ /g,'') === name || (name==='budget' && t.textContent.trim()==='vs. Budget') || (name==='movements' && t.textContent.trim()==='Customer Movements') || (name==='ltm' && t.textContent.trim()==='LTM Cohort') || (name==='waterfall' && t.textContent.trim()==='MoM Waterfall')) t.classList.add('active'); });
-  if (name === 'overview') renderOverview();
-  if (name === 'ltm') renderLTM();
-  if (name === 'waterfall') renderWaterfall();
-  if (name === 'movements') renderMovements();
-  if (name === 'budget') renderBudget();
+// ── State ──────────────────────────────────────────────────────────────
+let level = 'customer';
+let slicers = { overview: 24, ltm: 24, waterfall: 24 };
+let charts = {};
+let selectedMonth = '';
+
+// ── Palette ────────────────────────────────────────────────────────────
+const C = {
+  blue:'#2563eb', green:'#059669', red:'#dc2626', yellow:'#d97706',
+  purple:'#7c3aed', teal:'#0891b2', muted:'#94a3b8',
+  blueFill:'rgba(37,99,235,.1)', greenFill:'rgba(5,150,105,.1)',
+};
+
+// ── Helpers ────────────────────────────────────────────────────────────
+const fmt  = v => '$' + Math.round(v).toLocaleString();
+const fmtK = v => { const a=Math.abs(v); return (v<0?'-':'')+'$'+(a>=1000?(a/1000).toFixed(0)+'K':Math.round(a).toString()); };
+const pct  = v => (v*100).toFixed(1)+'%';
+const mlbl = m => { const [y,mo]=m.split('-'); return ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'][+mo-1]+' '+y.slice(2); };
+
+function destroyChart(id){ if(charts[id]){charts[id].destroy();delete charts[id];} }
+function mkChart(id,cfg){ destroyChart(id); const c=document.getElementById(id); if(!c)return; charts[id]=new Chart(c,cfg); return charts[id]; }
+
+function sliceWF(n)  { return n>=DATA.waterfall.length ? DATA.waterfall : DATA.waterfall.slice(-n); }
+function sliceLTM(n) { const s=level==='customer'?DATA.ltm_customer:DATA.ltm_parent; return n>=s.length?s:s.slice(-n); }
+
+// ── Tab control ────────────────────────────────────────────────────────
+function showTab(name){
+  document.querySelectorAll('.tab-pane').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
+  document.getElementById('tab-'+name).classList.add('active');
+  const tabs=['overview','ltm','waterfall','movements','budget'];
+  document.querySelectorAll('.tab').forEach((t,i)=>{ if(tabs[i]===name) t.classList.add('active'); });
+  if(name==='overview')  renderOverview();
+  if(name==='ltm')       renderLTM();
+  if(name==='waterfall') renderWaterfall();
+  if(name==='movements') renderMovements();
+  if(name==='budget')    renderBudget();
 }
 
-function setLevel(l) {
-  level = l;
-  document.querySelectorAll('.toggle-btn').forEach((b,i) => b.classList.toggle('active', (i===0&&l==='customer')||(i===1&&l==='parent')));
-  const active = document.querySelector('.tab-pane.active');
-  if (active) showTab(active.id.replace('tab-',''));
+function setLevel(l){
+  level=l;
+  document.querySelectorAll('.toggle-btn').forEach((b,i)=>b.classList.toggle('active',(i===0&&l==='customer')||(i===1&&l==='parent')));
+  const active=document.querySelector('.tab-pane.active');
+  if(active) showTab(active.id.replace('tab-',''));
 }
 
-// ── LTM data by level ──────────────────────────────────────────────────
-function getLTM() { return level === 'customer' ? DATA.ltm_customer : DATA.ltm_parent; }
-function getSummary() { return DATA.summary[level]; }
+function setSlicer(tab, n, btn){
+  slicers[tab]=n;
+  btn.closest('.slicer-bar').querySelectorAll('.slicer-btn').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  if(tab==='overview')  renderOverview();
+  if(tab==='ltm')       renderLTM();
+  if(tab==='waterfall') renderWaterfall();
+}
 
-// ── Overview ───────────────────────────────────────────────────────────
-function renderOverview() {
-  const s = getSummary();
-  const ltm = getLTM();
-  const wf = DATA.waterfall;
-  const latestWF = wf[wf.length - 1];
+// ── Shared chart options ───────────────────────────────────────────────
+const lineOpts = (yFmt, min, max) => ({
+  responsive:true, maintainAspectRatio:false,
+  plugins:{ legend:{position:'bottom',labels:{boxWidth:10,padding:12}} },
+  scales:{ y:{ min, max, ticks:{callback:yFmt}, grid:{color:'#e0e4ef'} }, x:{grid:{display:false}} }
+});
+const barOpts = (yFmt) => ({
+  responsive:true, maintainAspectRatio:false,
+  plugins:{ legend:{position:'bottom',labels:{boxWidth:10,padding:12}} },
+  scales:{ y:{ ticks:{callback:yFmt}, grid:{color:'#e0e4ef'} }, x:{grid:{display:false}} }
+});
+
+// ── OVERVIEW ───────────────────────────────────────────────────────────
+function renderOverview(){
+  const s = DATA.summary[level];
+  const n = slicers.overview;
+  const wf = sliceWF(n);
+  const ltm = sliceLTM(n);
+  const latestWF = DATA.waterfall[DATA.waterfall.length-1];
+  const net = latestWF.new+latestWF.churn+latestWF.upsell+latestWF.downsell;
 
   document.getElementById('kpi-row').innerHTML = `
-    <div class="kpi"><div class="kpi-label">EOP ARR</div><div class="kpi-value">${fmtK(s.eop_arr)}</div><div class="kpi-sub">${s.active_logos} active logos</div></div>
-    <div class="kpi"><div class="kpi-label">LTM NRR</div><div class="kpi-value" style="color:${s.ltm_nrr>=0.9?COLORS.green:s.ltm_nrr>=0.8?COLORS.yellow:COLORS.red}">${pct(s.ltm_nrr)}</div><div class="kpi-sub">Net Revenue Retention</div></div>
-    <div class="kpi"><div class="kpi-label">LTM GRR</div><div class="kpi-value" style="color:${s.ltm_grr>=0.85?COLORS.green:s.ltm_grr>=0.75?COLORS.yellow:COLORS.red}">${pct(s.ltm_grr)}</div><div class="kpi-sub">Gross Revenue Retention</div></div>
+    <div class="kpi"><div class="kpi-label">EOP ARR</div><div class="kpi-value" style="color:var(--blue)">${fmtK(s.eop_arr)}</div><div class="kpi-sub">${s.active_logos} active logos</div></div>
+    <div class="kpi"><div class="kpi-label">LTM NRR</div><div class="kpi-value" style="color:${s.ltm_nrr>=.9?C.green:s.ltm_nrr>=.8?C.yellow:C.red}">${pct(s.ltm_nrr)}</div><div class="kpi-sub">Net Revenue Retention</div></div>
+    <div class="kpi"><div class="kpi-label">LTM GRR</div><div class="kpi-value" style="color:${s.ltm_grr>=.85?C.green:s.ltm_grr>=.75?C.yellow:C.red}">${pct(s.ltm_grr)}</div><div class="kpi-sub">Gross Revenue Retention</div></div>
     <div class="kpi"><div class="kpi-label">Logo Retention</div><div class="kpi-value">${pct(s.ltm_logo_ret)}</div><div class="kpi-sub">${s.ltm_retained}/${s.ltm_cohort} retained</div></div>
     <div class="kpi"><div class="kpi-label">ARR / Logo</div><div class="kpi-value">${fmtK(s.arr_per_logo)}</div><div class="kpi-sub">Average ARR</div></div>
-    <div class="kpi"><div class="kpi-label">MoM Net</div><div class="kpi-value" style="color:${latestWF.new+latestWF.churn+latestWF.upsell+latestWF.downsell>=0?COLORS.green:COLORS.red}">${fmtK(latestWF.new+latestWF.churn+latestWF.upsell+latestWF.downsell)}</div><div class="kpi-sub">Mar 2026</div></div>
+    <div class="kpi"><div class="kpi-label">MoM Net (Mar)</div><div class="kpi-value" style="color:${net>=0?C.green:C.red}">${net>=0?'+':''}${fmtK(net)}</div><div class="kpi-sub">vs. prior month</div></div>
   `;
 
-  // ARR over time
-  const recent = DATA.waterfall.slice(-36);
-  makeChart('chart-arr-time', {
-    type: 'line',
-    data: { labels: recent.map(d => monthLabel(d.month)), datasets: [{ label: 'ARR', data: recent.map(d => d.arr), borderColor: COLORS.blue, backgroundColor: 'rgba(79,142,247,.1)', fill: true, tension: .3, pointRadius: 0, borderWidth: 2 }] },
-    options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } }, scales: { y: { ticks: { callback: v => fmtK(v) } } } }
-  });
+  const labels = wf.map(d=>mlbl(d.month));
 
-  // NRR + GRR
-  const ltmR = ltm.slice(-36);
-  makeChart('chart-nrr-time', {
-    type: 'line',
-    data: { labels: ltmR.map(d => monthLabel(d.month)), datasets: [
-      { label: 'NRR', data: ltmR.map(d => d.nrr * 100), borderColor: COLORS.blue, tension: .3, pointRadius: 0, borderWidth: 2 },
-      { label: 'GRR', data: ltmR.map(d => d.grr * 100), borderColor: COLORS.green, tension: .3, pointRadius: 0, borderWidth: 2 },
-    ]},
-    options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { position: 'bottom', labels: { boxWidth: 10 } } }, scales: { y: { ticks: { callback: v => v + '%' }, min: 50, max: 110 } } }
-  });
+  mkChart('chart-arr-time',{type:'line', data:{labels, datasets:[{label:'ARR',data:wf.map(d=>d.arr),borderColor:C.blue,backgroundColor:C.blueFill,fill:true,tension:.3,pointRadius:0,borderWidth:2}]},
+    options:lineOpts(v=>fmtK(v))});
 
-  // Logo retention
-  makeChart('chart-logo-time', {
-    type: 'line',
-    data: { labels: ltmR.map(d => monthLabel(d.month)), datasets: [{ label: 'Logo Retention', data: ltmR.map(d => d.logo_ret * 100), borderColor: COLORS.purple, backgroundColor: 'rgba(167,139,250,.1)', fill: true, tension: .3, pointRadius: 0, borderWidth: 2 }] },
-    options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } }, scales: { y: { ticks: { callback: v => v + '%' }, min: 50, max: 100 } } }
+  // Avg ARR per active customer over time
+  const avgArr = wf.map(d=>{
+    const lp = (level==='customer'?DATA.ltm_customer:DATA.ltm_parent).find(l=>l.month===d.month);
+    if(!lp || lp.logos_retained===0) return null;
+    return d.arr / lp.logos_retained;
   });
+  mkChart('chart-arr-per-logo',{type:'line', data:{labels, datasets:[{label:'Avg ARR / Customer',data:avgArr,borderColor:C.teal,backgroundColor:'rgba(8,145,178,.1)',fill:true,tension:.3,pointRadius:0,borderWidth:2,spanGaps:true}]},
+    options:{...lineOpts(v=>fmtK(v)), plugins:{legend:{display:false}}}});
 
-  // ARR per logo
-  const arrPerLogo = DATA.waterfall.slice(-36).map(d => {
-    const ltmPt = (level === 'customer' ? DATA.ltm_customer : DATA.ltm_parent).find(l => l.month === d.month);
-    const active = ltmPt ? ltmPt.logos_retained : null;
-    return active ? d.arr / active : null;
-  });
-  makeChart('chart-arr-per-logo', {
-    type: 'line',
-    data: { labels: recent.map(d => monthLabel(d.month)), datasets: [{ label: 'ARR/Logo', data: arrPerLogo, borderColor: COLORS.teal, tension: .3, pointRadius: 0, borderWidth: 2 }] },
-    options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } }, scales: { y: { ticks: { callback: v => fmtK(v) } } } }
-  });
+  const ltmFilt = ltm.filter(d=>wf.some(w=>w.month===d.month));
+  const ltmLabels = ltmFilt.map(d=>mlbl(d.month));
+
+  mkChart('chart-nrr-time',{type:'line', data:{labels:ltmLabels, datasets:[
+    {label:'NRR',data:ltmFilt.map(d=>+(d.nrr*100).toFixed(1)),borderColor:C.blue,tension:.3,pointRadius:0,borderWidth:2},
+    {label:'GRR',data:ltmFilt.map(d=>+(d.grr*100).toFixed(1)),borderColor:C.green,tension:.3,pointRadius:0,borderWidth:2},
+  ]}, options:lineOpts(v=>v+'%',40,110)});
+
+  mkChart('chart-logo-time',{type:'line', data:{labels:ltmLabels, datasets:[
+    {label:'Logo Retention',data:ltmFilt.map(d=>+(d.logo_ret*100).toFixed(1)),borderColor:C.purple,backgroundColor:'rgba(124,58,237,.08)',fill:true,tension:.3,pointRadius:0,borderWidth:2}
+  ]}, options:{...lineOpts(v=>v+'%',40,100),plugins:{legend:{display:false}}}});
 }
 
-// ── LTM Cohort ─────────────────────────────────────────────────────────
-function renderLTM() {
-  const ltm = getLTM();
-  const s = getSummary();
+// ── LTM ────────────────────────────────────────────────────────────────
+function renderLTM(){
+  const s = DATA.summary[level];
+  const ltm = sliceLTM(slicers.ltm);
+  const last = ltm[ltm.length-1];
+  const labels = ltm.map(d=>mlbl(d.month));
+
   document.getElementById('ltm-kpi-row').innerHTML = `
-    <div class="kpi"><div class="kpi-label">LTM NRR</div><div class="kpi-value" style="color:${s.ltm_nrr>=0.9?COLORS.green:s.ltm_nrr>=0.8?COLORS.yellow:COLORS.red}">${pct(s.ltm_nrr)}</div><div class="kpi-sub">Mar 2026 trailing 12mo</div></div>
-    <div class="kpi"><div class="kpi-label">LTM GRR</div><div class="kpi-value" style="color:${s.ltm_grr>=0.85?COLORS.green:s.ltm_grr>=0.75?COLORS.yellow:COLORS.red}">${pct(s.ltm_grr)}</div><div class="kpi-sub">Capped at prior ARR</div></div>
-    <div class="kpi"><div class="kpi-label">Logo Retention</div><div class="kpi-value">${pct(s.ltm_logo_ret)}</div><div class="kpi-sub">${s.ltm_retained} of ${s.ltm_cohort} retained</div></div>
-    <div class="kpi"><div class="kpi-label">Cohort ARR Prior</div><div class="kpi-value">${fmtK(ltm[ltm.length-1].arr_prior)}</div><div class="kpi-sub">Mar 2025 cohort baseline</div></div>
-    <div class="kpi"><div class="kpi-label">Cohort ARR Now</div><div class="kpi-value">${fmtK(ltm[ltm.length-1].arr_now)}</div><div class="kpi-sub">Mar 2026 cohort current</div></div>
+    <div class="kpi"><div class="kpi-label">LTM NRR</div><div class="kpi-value" style="color:${s.ltm_nrr>=.9?C.green:s.ltm_nrr>=.8?C.yellow:C.red}">${pct(s.ltm_nrr)}</div><div class="kpi-sub">Mar 2026 trailing 12mo</div></div>
+    <div class="kpi"><div class="kpi-label">LTM GRR</div><div class="kpi-value" style="color:${s.ltm_grr>=.85?C.green:s.ltm_grr>=.75?C.yellow:C.red}">${pct(s.ltm_grr)}</div><div class="kpi-sub">Capped at prior ARR</div></div>
+    <div class="kpi"><div class="kpi-label">Logo Retention</div><div class="kpi-value">${pct(s.ltm_logo_ret)}</div><div class="kpi-sub">${s.ltm_retained} of ${s.ltm_cohort}</div></div>
+    <div class="kpi"><div class="kpi-label">Cohort ARR Prior</div><div class="kpi-value">${fmtK(last.arr_prior)}</div><div class="kpi-sub">Mar 2025 baseline</div></div>
+    <div class="kpi"><div class="kpi-label">Cohort ARR Now</div><div class="kpi-value">${fmtK(last.arr_now)}</div><div class="kpi-sub">Mar 2026 current</div></div>
   `;
 
-  const recent = ltm.slice(-30);
-  makeChart('chart-ltm-full', {
-    type: 'line',
-    data: { labels: recent.map(d => monthLabel(d.month)), datasets: [
-      { label: 'NRR', data: recent.map(d => +(d.nrr*100).toFixed(1)), borderColor: COLORS.blue, tension: .3, pointRadius: 2, borderWidth: 2 },
-      { label: 'GRR', data: recent.map(d => +(d.grr*100).toFixed(1)), borderColor: COLORS.green, tension: .3, pointRadius: 2, borderWidth: 2 },
-      { label: 'Logo Ret.', data: recent.map(d => +(d.logo_ret*100).toFixed(1)), borderColor: COLORS.purple, tension: .3, pointRadius: 2, borderWidth: 2, borderDash: [4,3] },
-    ]},
-    options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { position: 'bottom', labels: { boxWidth: 10 } }, tooltip: { callbacks: { label: ctx => ctx.dataset.label + ': ' + ctx.parsed.y.toFixed(1) + '%' } } }, scales: { y: { ticks: { callback: v => v + '%' }, min: 40, max: 120 } } }
-  });
+  mkChart('chart-ltm-full',{type:'line', data:{labels, datasets:[
+    {label:'NRR',data:ltm.map(d=>+(d.nrr*100).toFixed(1)),borderColor:C.blue,tension:.3,pointRadius:2,borderWidth:2},
+    {label:'GRR',data:ltm.map(d=>+(d.grr*100).toFixed(1)),borderColor:C.green,tension:.3,pointRadius:2,borderWidth:2},
+    {label:'Logo Ret.',data:ltm.map(d=>+(d.logo_ret*100).toFixed(1)),borderColor:C.purple,tension:.3,pointRadius:2,borderWidth:2,borderDash:[4,3]},
+  ]}, options:{...lineOpts(v=>v+'%',40,120), plugins:{legend:{position:'bottom',labels:{boxWidth:10,padding:12}},
+    tooltip:{callbacks:{label:ctx=>ctx.dataset.label+': '+ctx.parsed.y.toFixed(1)+'%'}}}}});
 
-  makeChart('chart-cohort-arr', {
-    type: 'bar',
-    data: { labels: recent.map(d => monthLabel(d.month)), datasets: [
-      { label: 'Prior ARR', data: recent.map(d => d.arr_prior), backgroundColor: 'rgba(79,142,247,.4)', borderColor: COLORS.blue, borderWidth: 1 },
-      { label: 'Current ARR', data: recent.map(d => d.arr_now), backgroundColor: 'rgba(52,211,153,.4)', borderColor: COLORS.green, borderWidth: 1 },
-    ]},
-    options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { position: 'bottom', labels: { boxWidth: 10 } } }, scales: { y: { ticks: { callback: v => fmtK(v) } } } }
-  });
+  mkChart('chart-cohort-arr',{type:'bar', data:{labels, datasets:[
+    {label:'Prior ARR',data:ltm.map(d=>d.arr_prior),backgroundColor:'rgba(37,99,235,.25)',borderColor:C.blue,borderWidth:1},
+    {label:'Current ARR',data:ltm.map(d=>d.arr_now),backgroundColor:'rgba(5,150,105,.25)',borderColor:C.green,borderWidth:1},
+  ]}, options:barOpts(v=>fmtK(v))});
 
-  makeChart('chart-cohort-logos', {
-    type: 'bar',
-    data: { labels: recent.map(d => monthLabel(d.month)), datasets: [
-      { label: 'Cohort Size', data: recent.map(d => d.cohort_size), backgroundColor: 'rgba(79,142,247,.4)', borderColor: COLORS.blue, borderWidth: 1 },
-      { label: 'Retained', data: recent.map(d => d.logos_retained), backgroundColor: 'rgba(52,211,153,.4)', borderColor: COLORS.green, borderWidth: 1 },
-    ]},
-    options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { position: 'bottom', labels: { boxWidth: 10 } } } }
-  });
+  mkChart('chart-cohort-logos',{type:'bar', data:{labels, datasets:[
+    {label:'Cohort Size',data:ltm.map(d=>d.cohort_size),backgroundColor:'rgba(37,99,235,.25)',borderColor:C.blue,borderWidth:1},
+    {label:'Retained',data:ltm.map(d=>d.logos_retained),backgroundColor:'rgba(5,150,105,.25)',borderColor:C.green,borderWidth:1},
+  ]}, options:barOpts(v=>v)});
 }
 
-// ── Waterfall ──────────────────────────────────────────────────────────
-function renderWaterfall() {
-  const wf = DATA.waterfall.slice(-24);
-  const labels = wf.map(d => monthLabel(d.month));
+// ── WATERFALL ──────────────────────────────────────────────────────────
+function renderWaterfall(){
+  const wf = sliceWF(slicers.waterfall);
+  const labels = wf.map(d=>mlbl(d.month));
 
-  makeChart('chart-waterfall', {
-    type: 'bar',
-    data: { labels, datasets: [
-      { label: 'New', data: wf.map(d => d.new), backgroundColor: 'rgba(52,211,153,.7)', stack: 's' },
-      { label: 'Upsell', data: wf.map(d => d.upsell), backgroundColor: 'rgba(79,142,247,.7)', stack: 's' },
-      { label: 'Downsell', data: wf.map(d => d.downsell), backgroundColor: 'rgba(251,191,36,.7)', stack: 's' },
-      { label: 'Churn', data: wf.map(d => d.churn), backgroundColor: 'rgba(248,113,113,.7)', stack: 's' },
-    ]},
-    options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { position: 'bottom', labels: { boxWidth: 10 } } }, scales: { y: { stacked: true, ticks: { callback: v => fmtK(v) } }, x: { stacked: true } } }
-  });
+  mkChart('chart-waterfall',{type:'bar', data:{labels, datasets:[
+    {label:'New',   data:wf.map(d=>d.new),   backgroundColor:'rgba(5,150,105,.7)', stack:'s'},
+    {label:'Upsell',data:wf.map(d=>d.upsell),backgroundColor:'rgba(37,99,235,.7)',  stack:'s'},
+    {label:'Downsell',data:wf.map(d=>d.downsell),backgroundColor:'rgba(217,119,6,.7)', stack:'s'},
+    {label:'Churn', data:wf.map(d=>d.churn), backgroundColor:'rgba(220,38,38,.7)',  stack:'s'},
+  ]}, options:{responsive:true,maintainAspectRatio:false,
+    plugins:{legend:{position:'bottom',labels:{boxWidth:10,padding:12}}},
+    scales:{y:{stacked:true,ticks:{callback:v=>fmtK(v)},grid:{color:'#e0e4ef'}},x:{stacked:true,grid:{display:false}}}}});
 
-  makeChart('chart-new', {
-    type: 'bar',
-    data: { labels, datasets: [{ label: 'New ARR', data: wf.map(d => d.new), backgroundColor: 'rgba(52,211,153,.7)', borderColor: COLORS.green, borderWidth: 1 }] },
-    options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } }, scales: { y: { ticks: { callback: v => fmtK(v) } } } }
-  });
+  mkChart('chart-new',{type:'bar', data:{labels, datasets:[{label:'New ARR',data:wf.map(d=>d.new),backgroundColor:'rgba(5,150,105,.6)',borderColor:C.green,borderWidth:1}]},
+    options:{...barOpts(v=>fmtK(v)),plugins:{legend:{display:false}}}});
 
-  makeChart('chart-churn', {
-    type: 'bar',
-    data: { labels, datasets: [{ label: 'Churn ARR', data: wf.map(d => Math.abs(d.churn)), backgroundColor: 'rgba(248,113,113,.7)', borderColor: COLORS.red, borderWidth: 1 }] },
-    options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } }, scales: { y: { ticks: { callback: v => fmtK(v) } } } }
-  });
+  mkChart('chart-churn',{type:'bar', data:{labels, datasets:[{label:'Churn ARR',data:wf.map(d=>Math.abs(d.churn)),backgroundColor:'rgba(220,38,38,.6)',borderColor:C.red,borderWidth:1}]},
+    options:{...barOpts(v=>fmtK(v)),plugins:{legend:{display:false}}}});
 
-  makeChart('chart-expansion', {
-    type: 'bar',
-    data: { labels, datasets: [{ label: 'Net Expansion', data: wf.map(d => d.upsell + d.downsell), backgroundColor: wf.map(d => d.upsell+d.downsell >= 0 ? 'rgba(79,142,247,.7)' : 'rgba(251,191,36,.7)'), borderWidth: 1 }] },
-    options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } }, scales: { y: { ticks: { callback: v => fmtK(v) } } } }
-  });
+  mkChart('chart-expansion',{type:'bar', data:{labels, datasets:[{label:'Net Expansion',data:wf.map(d=>d.upsell+d.downsell),
+    backgroundColor:wf.map(d=>d.upsell+d.downsell>=0?'rgba(37,99,235,.6)':'rgba(217,119,6,.6)'),borderWidth:1}]},
+    options:{...barOpts(v=>fmtK(v)),plugins:{legend:{display:false}}}});
 
-  makeChart('chart-arr-trend', {
-    type: 'line',
-    data: { labels, datasets: [{ label: 'ARR', data: wf.map(d => d.arr), borderColor: COLORS.blue, backgroundColor: 'rgba(79,142,247,.1)', fill: true, tension: .3, pointRadius: 2, borderWidth: 2 }] },
-    options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } }, scales: { y: { ticks: { callback: v => fmtK(v) } } } }
-  });
+  mkChart('chart-arr-trend',{type:'line', data:{labels, datasets:[{label:'ARR',data:wf.map(d=>d.arr),borderColor:C.blue,backgroundColor:C.blueFill,fill:true,tension:.3,pointRadius:2,borderWidth:2}]},
+    options:{...lineOpts(v=>fmtK(v)),plugins:{legend:{display:false}}}});
 }
 
-// ── Movements ──────────────────────────────────────────────────────────
-let allMovements = DATA.movements;
+// ── MOVEMENTS ──────────────────────────────────────────────────────────
+function renderMovements(){
+  const months = [...new Set(DATA.movements.map(d=>d.month))].sort();
+  if(!selectedMonth || !months.includes(selectedMonth)) selectedMonth = months[months.length-1];
 
-function renderMovements() {
-  const sel = document.getElementById('move-month');
-  const months = [...new Set(allMovements.map(d => d.month))].sort();
-  sel.innerHTML = '<option value="">All Months</option>' + months.map(m => `<option value="${m}">${monthLabel(m)}</option>`).join('');
-  filterMovements();
+  const slicer = document.getElementById('month-slicer');
+  slicer.innerHTML = '<span style="font-size:12px;font-weight:500;color:var(--muted);margin-right:4px">Month:</span>' +
+    months.map(m=>`<span class="month-pill${m===selectedMonth?' active':''}" onclick="selectMonth('${m}')">${mlbl(m)}</span>`).join('');
+
+  populateMoveTables(selectedMonth);
 }
 
-function filterMovements() {
-  const mFilter = document.getElementById('move-month').value;
-  const tFilter = document.getElementById('move-type').value;
-  const filtered = allMovements.filter(d => (!mFilter || d.month === mFilter) && (!tFilter || d.movement === tFilter));
-  filtered.sort((a,b) => b.month.localeCompare(a.month) || Math.abs(b.delta) - Math.abs(a.delta));
-  const body = document.getElementById('move-table-body');
-  body.innerHTML = filtered.map(d => {
-    const dc = d.delta > 0 ? 'delta-pos' : d.delta < 0 ? 'delta-neg' : 'delta-neu';
-    const sign = d.delta > 0 ? '+' : '';
-    const pill = `<span class="pill pill-${d.movement.toLowerCase()}">${d.movement}</span>`;
-    return `<tr><td>${monthLabel(d.month)}</td><td>${d.company}</td><td>${d.parent}</td><td>${pill}</td><td>${fmt(d.prev_arr)}</td><td>${fmt(d.cur_arr)}</td><td class="${dc}">${sign}${fmt(d.delta)}</td></tr>`;
-  }).join('');
+function selectMonth(m){
+  selectedMonth=m;
+  document.querySelectorAll('.month-pill').forEach(p=>p.classList.toggle('active',p.textContent===mlbl(m)));
+  populateMoveTables(m);
 }
 
-// ── vs. Budget ─────────────────────────────────────────────────────────
-function renderBudget() {
-  const budgetArr = DATA.budget_arr;
-  const budgetChurn = DATA.budget_churn;
-  const budgetNew = DATA.budget_new;
+function populateMoveTables(m){
+  const rows = DATA.movements.filter(d=>d.month===m);
+  const byType = t => rows.filter(d=>d.movement===t).sort((a,b)=>Math.abs(b.delta)-Math.abs(a.delta));
 
-  // KPIs: latest actual month variance
-  const actuals = budgetArr.filter(d => d.actual !== null);
-  const latest = actuals[actuals.length - 1];
-  const latestBudget = latest.budget;
-  const latestActual = latest.actual;
-  const arrVariance = latestActual - latestBudget;
-  const arrVariancePct = latestBudget ? arrVariance / latestBudget : 0;
+  const fill = (type, countId, arrId, bodyId, rowFn) => {
+    const data = byType(type);
+    const totalArr = data.reduce((s,d)=>s+Math.abs(d.delta),0);
+    document.getElementById(countId).textContent = data.length;
+    document.getElementById(arrId).textContent = (type==='Churn'?'-':type==='Downsell'?'-':'+') + fmt(totalArr);
+    const body = document.getElementById(bodyId);
+    body.innerHTML = data.length ? data.map(rowFn).join('') :
+      `<tr><td colspan="4" class="empty-state">None this month</td></tr>`;
+  };
 
-  // Churn variance (actuals only, sum)
-  const churnActuals = budgetChurn.filter(d => d.actual !== null);
-  const totalActualChurn = churnActuals.reduce((s,d) => s + (d.actual || 0), 0);
-  const totalBudgetChurn = churnActuals.reduce((s,d) => s + (d.budget || 0), 0);
-  const churnVar = totalActualChurn - totalBudgetChurn; // both negative
-
-  const newActuals = budgetNew.filter(d => d.actual !== null);
-  const totalActualNew = newActuals.reduce((s,d) => s + (d.actual || 0), 0);
-  const totalBudgetNew = newActuals.reduce((s,d) => s + (d.budget || 0), 0);
-  const newVar = totalActualNew - totalBudgetNew;
-
-  const ytdChurnBudget = budgetChurn.reduce((s,d) => s + (d.budget || 0), 0);
-  const ytdNewBudget = budgetNew.reduce((s,d) => s + (d.budget || 0), 0);
-
-  document.getElementById('budget-kpi-row').innerHTML = `
-    <div class="kpi"><div class="kpi-label">ARR vs. Budget (${monthLabel(latest.month)})</div><div class="kpi-value ${arrVariance >= 0 ? 'ahead' : 'behind'}">${arrVariance >= 0 ? '+' : ''}${fmtK(arrVariance)}</div><div class="kpi-sub">${pct(Math.abs(arrVariancePct))} ${arrVariance >= 0 ? 'ahead' : 'behind'} · ${fmt(latestActual)} actual vs ${fmt(latestBudget)} budget</div></div>
-    <div class="kpi"><div class="kpi-label">YTD Churn vs. Budget</div><div class="kpi-value ${churnVar >= 0 ? 'ahead' : 'behind'}">${churnVar >= 0 ? '+' : ''}${fmtK(churnVar)}</div><div class="kpi-sub">Actual ${fmt(totalActualChurn)} vs budget ${fmt(totalBudgetChurn)}</div></div>
-    <div class="kpi"><div class="kpi-label">YTD New ARR vs. Budget</div><div class="kpi-value ${newVar >= 0 ? 'ahead' : 'behind'}">${newVar >= 0 ? '+' : ''}${fmtK(newVar)}</div><div class="kpi-sub">Actual ${fmt(totalActualNew)} vs budget ${fmt(totalBudgetNew)}</div></div>
-    <div class="kpi"><div class="kpi-label">FY2026 Budget ARR</div><div class="kpi-value neutral">${fmtK(budgetArr[budgetArr.length-1].budget)}</div><div class="kpi-sub">Dec 2026 target ending balance</div></div>
-  `;
-
-  // ARR chart: actual (solid) + budget (dashed, extends to Dec 2026)
-  const arrLabels = budgetArr.map(d => monthLabel(d.month));
-  const actLine = budgetArr.map(d => d.actual);
-  const budLine = budgetArr.map(d => d.budget);
-
-  makeChart('chart-budget-arr', {
-    type: 'line',
-    data: { labels: arrLabels, datasets: [
-      { label: 'Actual ARR', data: actLine, borderColor: COLORS.blue, backgroundColor: 'rgba(79,142,247,.08)', fill: true, tension: .3, pointRadius: d => d.raw !== null ? 3 : 0, borderWidth: 2.5, spanGaps: false },
-      { label: 'Budget ARR', data: budLine, borderColor: COLORS.muted, borderDash: [6,4], tension: .3, pointRadius: 0, borderWidth: 2, fill: false },
-    ]},
-    options: {
-      responsive: true, maintainAspectRatio: false,
-      plugins: { legend: { position: 'bottom', labels: { boxWidth: 10 } }, tooltip: { callbacks: { label: ctx => ctx.dataset.label + ': ' + (ctx.parsed.y !== null ? fmt(ctx.parsed.y) : 'N/A') } } },
-      scales: { y: { ticks: { callback: v => fmtK(v) } } }
-    }
-  });
-
-  // Churn chart
-  const churnLabels = budgetChurn.map(d => monthLabel(d.month));
-  makeChart('chart-budget-churn', {
-    type: 'bar',
-    data: { labels: churnLabels, datasets: [
-      { label: 'Actual Churn', data: budgetChurn.map(d => d.actual !== null ? Math.abs(d.actual) : null), backgroundColor: 'rgba(248,113,113,.7)', borderColor: COLORS.red, borderWidth: 1 },
-      { label: 'Budget Churn', data: budgetChurn.map(d => Math.abs(d.budget)), backgroundColor: 'rgba(139,144,167,.3)', borderColor: COLORS.muted, borderWidth: 1 },
-    ]},
-    options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { position: 'bottom', labels: { boxWidth: 10 } } }, scales: { y: { ticks: { callback: v => fmtK(v) } } } }
-  });
-
-  // New ARR chart
-  const newLabels = budgetNew.map(d => monthLabel(d.month));
-  makeChart('chart-budget-new', {
-    type: 'bar',
-    data: { labels: newLabels, datasets: [
-      { label: 'Actual New ARR', data: budgetNew.map(d => d.actual !== null ? d.actual : null), backgroundColor: 'rgba(52,211,153,.7)', borderColor: COLORS.green, borderWidth: 1 },
-      { label: 'Budget New ARR', data: budgetNew.map(d => d.budget), backgroundColor: 'rgba(139,144,167,.3)', borderColor: COLORS.muted, borderWidth: 1 },
-    ]},
-    options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { position: 'bottom', labels: { boxWidth: 10 } } }, scales: { y: { ticks: { callback: v => fmtK(v) } } } }
-  });
+  fill('New','new-count','new-arr','new-body',
+    d=>`<tr><td>${d.company}</td><td>${fmt(d.cur_arr)}</td></tr>`);
+  fill('Churn','churn-count','churn-arr','churn-body',
+    d=>`<tr><td>${d.company}</td><td>${fmt(d.prev_arr)}</td></tr>`);
+  fill('Upsell','upsell-count','upsell-arr','upsell-body',
+    d=>`<tr><td>${d.company}</td><td>${fmt(d.prev_arr)}</td><td>${fmt(d.cur_arr)}</td><td style="color:var(--green);font-weight:600">+${fmt(d.delta)}</td></tr>`);
+  fill('Downsell','downsell-count','downsell-arr','downsell-body',
+    d=>`<tr><td>${d.company}</td><td>${fmt(d.prev_arr)}</td><td>${fmt(d.cur_arr)}</td><td style="color:var(--yellow);font-weight:600">${fmt(d.delta)}</td></tr>`);
 }
 
-// ── Tab click fix ──────────────────────────────────────────────────────
-document.querySelectorAll('.tab').forEach((t, i) => {
-  const names = ['overview','ltm','waterfall','movements','budget'];
-  t.onclick = () => showTab(names[i]);
-});
+// ── vs. BUDGET ─────────────────────────────────────────────────────────
+function renderBudget(){
+  const bArr = DATA.budget_arr;
+  const bChurn = DATA.budget_churn;
+  const bNew = DATA.budget_new;
+
+  const actuals = bArr.filter(d=>d.actual!==null);
+  const latest = actuals[actuals.length-1];
+  const arrVar = latest.actual - latest.budget;
+  const arrVarPct = latest.budget ? arrVar/latest.budget : 0;
+
+  const churnActuals = bChurn.filter(d=>d.actual!==null);
+  const totActChurn = churnActuals.reduce((s,d)=>s+(d.actual||0),0);
+  const totBudChurn = churnActuals.reduce((s,d)=>s+(d.budget||0),0);
+  const newActuals  = bNew.filter(d=>d.actual!==null);
+  const totActNew   = newActuals.reduce((s,d)=>s+(d.actual||0),0);
+  const totBudNew   = newActuals.reduce((s,d)=>s+(d.budget||0),0);
+
+  const kpiCard = (label, val, valClass, sub) =>
+    `<div class="kpi"><div class="kpi-label">${label}</div><div class="kpi-value ${valClass}">${val}</div><div class="kpi-sub">${sub}</div></div>`;
+
+  document.getElementById('budget-kpi-row').innerHTML =
+    kpiCard(`ARR vs Budget (${mlbl(latest.month)})`,
+      (arrVar>=0?'+':'')+fmtK(arrVar), arrVar>=0?'ahead':'behind',
+      pct(Math.abs(arrVarPct))+' '+(arrVar>=0?'ahead':'behind')+' · '+fmt(latest.actual)+' vs '+fmt(latest.budget)) +
+    kpiCard('YTD Churn vs Budget',
+      (totActChurn-totBudChurn>=0?'+':'')+fmtK(totActChurn-totBudChurn),
+      (totActChurn-totBudChurn)>=0?'ahead':'behind',
+      'Actual '+fmt(totActChurn)+' vs budget '+fmt(totBudChurn)) +
+    kpiCard('YTD New ARR vs Budget',
+      (totActNew>=totBudNew?'+':'')+fmtK(totActNew-totBudNew),
+      totActNew>=totBudNew?'ahead':'behind',
+      'Actual '+fmt(totActNew)+' vs budget '+fmt(totBudNew)) +
+    kpiCard('FY2026 Budget Target', fmtK(bArr[bArr.length-1].budget), 'neutral', 'Dec 2026 ending balance');
+
+  const arrLabels = bArr.map(d=>mlbl(d.month));
+  mkChart('chart-budget-arr',{type:'line', data:{labels:arrLabels, datasets:[
+    {label:'Actual ARR', data:bArr.map(d=>d.actual), borderColor:C.blue, backgroundColor:C.blueFill, fill:true, tension:.3, pointRadius:d=>d.raw!==null?3:0, borderWidth:2.5, spanGaps:false},
+    {label:'Budget ARR', data:bArr.map(d=>d.budget), borderColor:C.muted, borderDash:[6,4], tension:.3, pointRadius:0, borderWidth:2, fill:false},
+  ]}, options:{...lineOpts(v=>fmtK(v)),
+    plugins:{legend:{position:'bottom',labels:{boxWidth:10,padding:12}},
+    tooltip:{callbacks:{label:ctx=>ctx.dataset.label+': '+(ctx.parsed.y!==null?fmt(ctx.parsed.y):'N/A')}}}}});
+
+  mkChart('chart-budget-churn',{type:'bar', data:{labels:bChurn.map(d=>mlbl(d.month)), datasets:[
+    {label:'Actual Churn', data:bChurn.map(d=>d.actual!==null?Math.abs(d.actual):null), backgroundColor:'rgba(220,38,38,.6)', borderColor:C.red, borderWidth:1},
+    {label:'Budget Churn', data:bChurn.map(d=>Math.abs(d.budget)), backgroundColor:'rgba(148,163,184,.35)', borderColor:C.muted, borderWidth:1},
+  ]}, options:barOpts(v=>fmtK(v))});
+
+  mkChart('chart-budget-new',{type:'bar', data:{labels:bNew.map(d=>mlbl(d.month)), datasets:[
+    {label:'Actual New', data:bNew.map(d=>d.actual!==null?d.actual:null), backgroundColor:'rgba(5,150,105,.6)', borderColor:C.green, borderWidth:1},
+    {label:'Budget New', data:bNew.map(d=>d.budget), backgroundColor:'rgba(148,163,184,.35)', borderColor:C.muted, borderWidth:1},
+  ]}, options:barOpts(v=>fmtK(v))});
+}
 
 // ── Init ───────────────────────────────────────────────────────────────
 renderOverview();
